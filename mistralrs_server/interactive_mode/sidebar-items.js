@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["exit_handler","interactive_mode","terminate_handler"],"static":["CTRLC_HANDLER"]};
