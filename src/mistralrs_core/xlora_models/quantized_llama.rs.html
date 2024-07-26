@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/xlora_models/quantized_llama.rs`."><title>quantized_llama.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../mistralrs_core/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/xlora_models/quantized_llama.rs`."><title>quantized_llama.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -923,6 +923,61 @@
 <a href="#923" id="923">923</a>
 <a href="#924" id="924">924</a>
 <a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
 </pre></div><pre class="rust"><code><span class="attr">#![allow(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
 
 </span><span class="kw">use </span>std::collections::HashMap;
@@ -930,6 +985,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::lora::{
     get_lora_cfg, AdapterSwapper, LinearLayerLike, LoraConfig, Merge, Ordering, QLoraLinear,
 };
+<span class="kw">use </span><span class="kw">crate</span>::utils::progress::NiceProgressBar;
 <span class="kw">use </span>candle_core::quantized::QMatMul;
 <span class="kw">use </span>candle_core::quantized::{ggml_file, gguf_file};
 <span class="kw">use </span>candle_core::{DType, Device, <span class="prelude-ty">Result</span>, Tensor};
@@ -949,7 +1005,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::utils::model_config <span class="kw">as </span>ModelConfig;
 
 <span class="kw">const </span>MAX_SEQ_LEN: u32 = <span class="number">4096</span>;
-<span class="kw">const </span>SUPPORTED_LAYERS: [<span class="kw-2">&amp;</span>str; <span class="number">7</span>] = [
+<span class="kw">const </span>SUPPORTED_LAYERS: [<span class="kw-2">&amp;</span>str; <span class="number">8</span>] = [
     <span class="string">"self_attn.q_proj"</span>,
     <span class="string">"self_attn.k_proj"</span>,
     <span class="string">"self_attn.v_proj"</span>,
@@ -957,6 +1013,7 @@
     <span class="string">"mlp.up_proj"</span>,
     <span class="string">"mlp.down_proj"</span>,
     <span class="string">"mlp.gate_proj"</span>,
+    <span class="string">"lm_head"</span>,
 ];
 
 <span class="attr">#[derive(Debug)]
@@ -1088,8 +1145,7 @@
     }
 }
 
-<span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>LayerWeights {
+<span class="kw">struct </span>LayerWeights {
     attention_wq: QLoraLinear,
     attention_wk: QLoraLinear,
     attention_wv: QLoraLinear,
@@ -1106,7 +1162,7 @@
 <span class="kw">impl </span>LayerWeights {
     <span class="attr">#[allow(clippy::too_many_arguments)]
     </span><span class="kw">fn </span>forward_attn(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         x: <span class="kw-2">&amp;</span>Tensor,
         mask: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Tensor&gt;,
         start_offsets: <span class="kw-2">&amp;</span>[usize],
@@ -1138,27 +1194,40 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>q = q.reshape((b_sz * seq_len, <span class="self">self</span>.n_head, <span class="self">self</span>.head_dim))<span class="question-mark">?</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>k = k.reshape((b_sz * seq_len, <span class="self">self</span>.n_kv_head, <span class="self">self</span>.head_dim))<span class="question-mark">?</span>;
-        <span class="kw">let </span>v = v
-            .reshape((b_sz, seq_len, <span class="self">self</span>.n_kv_head, <span class="self">self</span>.head_dim))<span class="question-mark">?
-            </span>.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>v = <span class="kw">if </span>seq_len != <span class="number">1 </span>{
+            v.reshape((b_sz, seq_len, <span class="self">self</span>.n_kv_head, <span class="self">self</span>.head_dim))<span class="question-mark">?
+                </span>.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?
+        </span>} <span class="kw">else </span>{
+            <span class="comment">// Optimization for seqlen = 1, avoid transpose and just modify reshape dims
+            </span>v.reshape((b_sz, <span class="self">self</span>.n_kv_head, seq_len, <span class="self">self</span>.head_dim))<span class="question-mark">?
+        </span>};
 
         <span class="self">self</span>.rotary
             .forward(start_offsets, <span class="kw-2">&amp;</span>start_offsets_kernel, <span class="kw-2">&amp;mut </span>q, <span class="kw-2">&amp;mut </span>k, b_sz)<span class="question-mark">?</span>;
 
-        <span class="kw">if </span>q.rank() == <span class="number">3 </span>{
+        <span class="kw">if </span>q.rank() == <span class="number">3 </span>&amp;&amp; seq_len != <span class="number">1 </span>{
             q = q
                 .reshape((b_sz, seq_len, <span class="self">self</span>.n_head, <span class="self">self</span>.head_dim))<span class="question-mark">?
                 </span>.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?
                 </span>.contiguous()<span class="question-mark">?</span>;
             k = k
                 .reshape((b_sz, seq_len, <span class="self">self</span>.n_kv_head, <span class="self">self</span>.head_dim))<span class="question-mark">?
-                </span>.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
+                </span>.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?
+                </span>.contiguous()<span class="question-mark">?</span>;
+        } <span class="kw">else if </span>q.rank() == <span class="number">3 </span>{
+            <span class="comment">// Optimization for seqlen = 1, avoid transpose and just modify reshape dims
+            </span>q = q
+                .reshape((b_sz, <span class="self">self</span>.n_head, seq_len, <span class="self">self</span>.head_dim))<span class="question-mark">?
+                </span>.contiguous()<span class="question-mark">?</span>;
+            k = k
+                .reshape((b_sz, <span class="self">self</span>.n_kv_head, seq_len, <span class="self">self</span>.head_dim))<span class="question-mark">?
+                </span>.contiguous()<span class="question-mark">?</span>;
         }
 
         <span class="kw">let </span>(k, v) = Cache::update_kv_cache(kv_cache, k, v, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>k = repeat_kv(k, <span class="self">self</span>.n_head / <span class="self">self</span>.n_kv_head)<span class="question-mark">?</span>.contiguous()<span class="question-mark">?</span>;
-        <span class="kw">let </span>v = repeat_kv(v, <span class="self">self</span>.n_head / <span class="self">self</span>.n_kv_head)<span class="question-mark">?</span>.contiguous()<span class="question-mark">?</span>;
+        <span class="kw">let </span>k = repeat_kv(k, <span class="self">self</span>.n_head / <span class="self">self</span>.n_kv_head)<span class="question-mark">?</span>;
+        <span class="kw">let </span>v = repeat_kv(v, <span class="self">self</span>.n_head / <span class="self">self</span>.n_kv_head)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>y = ScaledDotProductAttention.run_attention(
             <span class="kw-2">&amp;</span>q,
@@ -1166,7 +1235,7 @@
             <span class="kw-2">&amp;</span>v,
             <span class="self">self</span>.n_head,
             <span class="self">self</span>.head_dim,
-            mask.clone().as_ref(),
+            mask.as_ref(),
             <span class="bool-val">false</span>,
             b_sz,
             seq_len,
@@ -1187,7 +1256,7 @@
     tok_embeddings: Embedding,
     layers: Vec&lt;LayerWeights&gt;,
     norm: QRmsNorm,
-    output: QMatMul,
+    output: QLoraLinear,
     <span class="kw">pub </span>device: Device,
     <span class="kw">pub </span>cache: Cache,
     xlora_classifier: <span class="prelude-ty">Option</span>&lt;XLoraClassifier&gt;,
@@ -1351,11 +1420,26 @@
                 }
             }
         }
+        <span class="kw">let </span>output_cfg = get_lora_cfg(<span class="kw-2">&amp;</span>output);
+        <span class="kw">let </span>output = QLoraLinear::new(
+            QMatMul::from_qtensor(output)<span class="question-mark">?</span>,
+            <span class="kw-2">&amp;</span>output_cfg,
+            lora_config,
+            vb,
+            ordering,
+            <span class="string">"lm_head"</span>.to_string(),
+            <span class="kw-2">&amp;mut </span>count,
+            preload_adapters,
+        )<span class="question-mark">?</span>;
+        <span class="kw">if </span>xlora_config.is_some() &amp;&amp; output.is_lora() {
+            <span class="comment">// This is why we can pass dummy values (..., None, 1.0, None)?
+            </span><span class="macro">candle_core::bail!</span>(<span class="string">"Got an adapter `lm_head` layer, this is unsupported with X-LoRA."</span>);
+        }
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             tok_embeddings: Embedding::new(tok_embeddings, ct.hparams.n_embd <span class="kw">as </span>usize),
             layers,
             norm,
-            output: QMatMul::from_qtensor(output)<span class="question-mark">?</span>,
+            output,
             device: ct.device.clone(),
             cache: Cache::new(ct.hparams.n_layer <span class="kw">as </span>usize, <span class="bool-val">true</span>),
             xlora_classifier: xlora_config.map(|xlora_config| {
@@ -1412,8 +1496,10 @@
         <span class="kw">let </span>output = ct.tensor(reader, <span class="string">"output.weight"</span>, device)<span class="question-mark">?</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>layers = Vec::with_capacity(block_count);
         <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
+
         <span class="kw">let </span>mapper = mapper.into_mapper(block_count, device)<span class="question-mark">?</span>;
-        <span class="kw">for </span>layer_idx <span class="kw">in </span><span class="number">0</span>..block_count {
+
+        <span class="kw">for </span>layer_idx <span class="kw">in </span>NiceProgressBar::&lt;<span class="kw">_</span>, <span class="string">'b'</span>&gt;(<span class="number">0</span>..block_count, <span class="string">"Loading repeating layers"</span>) {
             <span class="kw">let </span>prefix = <span class="macro">format!</span>(<span class="string">"blk.{layer_idx}"</span>);
             <span class="kw">let </span>device = mapper.device_for(layer_idx, <span class="bool-val">false</span>).unwrap_or(device);
             <span class="kw">let </span>rotary = RotaryEmbedding::new_partial(
@@ -1611,11 +1697,26 @@
                 }
             }
         }
+        <span class="kw">let </span>output_cfg = get_lora_cfg(<span class="kw-2">&amp;</span>output);
+        <span class="kw">let </span>output = QLoraLinear::new(
+            QMatMul::from_qtensor(output)<span class="question-mark">?</span>,
+            <span class="kw-2">&amp;</span>output_cfg,
+            lora_config,
+            vb,
+            ordering,
+            <span class="string">"lm_head"</span>.to_string(),
+            <span class="kw-2">&amp;mut </span>count,
+            preload_adapters,
+        )<span class="question-mark">?</span>;
+        <span class="kw">if </span>xlora_config.is_some() &amp;&amp; output.is_lora() {
+            <span class="comment">// This is why we can pass dummy values (..., None, 1.0, None)?
+            </span><span class="macro">candle_core::bail!</span>(<span class="string">"Got an adapter `lm_head` layer, this is unsupported with X-LoRA."</span>);
+        }
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             tok_embeddings: Embedding::new(tok_embeddings, embedding_length),
             layers,
             norm,
-            output: QMatMul::from_qtensor(output)<span class="question-mark">?</span>,
+            output,
             device: device.clone(),
             cache: Cache::new(block_count, <span class="bool-val">true</span>),
             xlora_classifier: xlora_config.map(|xlora_config| {
@@ -1630,6 +1731,9 @@
 
 <span class="kw">impl </span>ModelWeights {
     <span class="kw">pub fn </span>activate_adapters(<span class="kw-2">&amp;mut </span><span class="self">self</span>, adapter_names: Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+        <span class="kw">if </span><span class="self">self</span>.xlora_classifier.is_some() {
+            <span class="macro">candle_core::bail!</span>(<span class="string">"Adapter activation is not supported for X-LoRA models as the adapter set must remain the same."</span>);
+        }
         <span class="kw">let </span><span class="kw-2">mut </span>sum = <span class="number">0</span>;
         <span class="kw">for </span>layer <span class="kw">in </span><span class="self">self</span>.layers.iter_mut() {
             sum += layer.attention_wk.activate(<span class="kw-2">&amp;</span>adapter_names)<span class="question-mark">?</span>;
@@ -1660,7 +1764,7 @@
 
     <span class="attr">#[allow(clippy::too_many_arguments)]
     </span><span class="kw">fn </span>inner_forward(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         x: <span class="kw-2">&amp;</span>Tensor,
         start_offsets: <span class="kw-2">&amp;</span>[usize],
         start_offsets_kernel: Tensor,
@@ -1685,11 +1789,11 @@
         };
         <span class="kw">let </span>mask = CausalMasker.make_causal_mask_as_attn_bias(
             x,
-            <span class="kw-2">&amp;</span>cache,
+            <span class="kw-2">&amp;*</span>cache,
             DType::F32,
             <span class="self">self</span>.layers[<span class="number">0</span>].n_head,
         )<span class="question-mark">?</span>;
-        <span class="kw">for </span>(i, layer) <span class="kw">in </span><span class="self">self</span>.layers.iter_mut().enumerate() {
+        <span class="kw">for </span>(i, layer) <span class="kw">in </span><span class="self">self</span>.layers.iter().enumerate() {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>mapper) = <span class="self">self</span>.mapper {
                 layer_in = mapper.map(layer_in, i)<span class="question-mark">?</span>;
             }
@@ -1732,7 +1836,7 @@
 
     <span class="attr">#[allow(clippy::too_many_arguments)]
     </span><span class="kw">pub fn </span>forward(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         input_ids: <span class="kw-2">&amp;</span>Tensor,
         input_ids_full: <span class="kw-2">&amp;</span>Tensor,
         seqlen_offsets: <span class="kw-2">&amp;</span>[usize],
@@ -1758,7 +1862,7 @@
 
             <span class="kw">if </span>no_kv_cache {
                 extract_logits(
-                    <span class="kw-2">&amp;</span>MatMul.qmatmul(
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.output.lora_forward(
                         <span class="kw-2">&amp;</span><span class="self">self
                             </span>.inner_forward(
                                 input_ids_full,
@@ -1770,14 +1874,16 @@
                                 <span class="prelude-val">None</span>,
                             )<span class="question-mark">?
                             </span>.contiguous()<span class="question-mark">?</span>,
-                        <span class="kw-2">&amp;</span><span class="self">self</span>.output,
+                        <span class="prelude-val">None</span>,
+                        <span class="number">1.0</span>,
+                        <span class="prelude-val">None</span>,
                     )<span class="question-mark">?</span>,
                     context_lens,
                 )
             } <span class="kw">else </span>{
                 <span class="comment">// is_full_pass=true is ok because no_kv_cache=false
                 </span>extract_logits(
-                    <span class="kw-2">&amp;</span>MatMul.qmatmul(
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.output.lora_forward(
                         <span class="kw-2">&amp;</span><span class="self">self
                             </span>.inner_forward(
                                 input_ids,
@@ -1789,14 +1895,16 @@
                                 <span class="prelude-val">None</span>,
                             )<span class="question-mark">?
                             </span>.contiguous()<span class="question-mark">?</span>,
-                        <span class="kw-2">&amp;</span><span class="self">self</span>.output,
+                        <span class="prelude-val">None</span>,
+                        <span class="number">1.0</span>,
+                        <span class="prelude-val">None</span>,
                     )<span class="question-mark">?</span>,
                     context_lens,
                 )
             }
         } <span class="kw">else </span>{
             extract_logits(
-                <span class="kw-2">&amp;</span>MatMul.qmatmul(
+                <span class="kw-2">&amp;</span><span class="self">self</span>.output.lora_forward(
                     <span class="kw-2">&amp;</span><span class="self">self
                         </span>.inner_forward(
                             input_ids,
@@ -1808,7 +1916,9 @@
                             <span class="prelude-val">None</span>,
                         )<span class="question-mark">?
                         </span>.contiguous()<span class="question-mark">?</span>,
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.output,
+                    <span class="prelude-val">None</span>,
+                    <span class="number">1.0</span>,
+                    <span class="prelude-val">None</span>,
                 )<span class="question-mark">?</span>,
                 context_lens,
             )
@@ -1827,7 +1937,7 @@
         <span class="self">self</span>.xlora_classifier.as_ref().unwrap()
     }
     <span class="kw">fn </span>forward(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         input_ids: <span class="kw-2">&amp;</span>Tensor,
         seqlen_offsets: <span class="kw-2">&amp;</span>[usize],
         start_offsets_kernel: Tensor,

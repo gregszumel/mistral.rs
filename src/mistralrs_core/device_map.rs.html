@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/device_map.rs`."><title>device_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../mistralrs_core/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/device_map.rs`."><title>device_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -152,22 +152,99 @@
 <a href="#152" id="152">152</a>
 <a href="#153" id="153">153</a>
 <a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::fmt::Debug;
 
-<span class="kw">use </span>candle_core::{Device, <span class="prelude-ty">Result</span>, Tensor};
+<span class="kw">use crate</span>::{utils::debug::DeviceRepr, ModelDType, TryIntoDType};
+<span class="kw">use </span>candle_core::{DType, Device, <span class="prelude-ty">Result</span>, Tensor};
 <span class="kw">use </span>candle_nn::VarBuilder;
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>tracing::info;
 
 <span class="attr">#[derive(Debug, Default, Deserialize, Clone)]
+</span><span class="kw">pub struct </span>DeviceLayerMapMetadata {
+    <span class="kw">pub </span>ordinal: usize,
+    <span class="kw">pub </span>layers: usize,
+}
+
+<span class="attr">#[derive(Debug, Default, Deserialize, Clone)]
 </span><span class="doccomment">/// Metadata to initialize the device mapper.
 </span><span class="kw">pub struct </span>DeviceMapMetadata {
-    device_layers: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    device_layers: <span class="prelude-ty">Option</span>&lt;Vec&lt;DeviceLayerMapMetadata&gt;&gt;,
     host_layers: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
 <span class="kw">impl </span>DeviceMapMetadata {
-    <span class="kw">pub fn </span>from_num_device_layers(device_layers: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>from_num_device_layers(device_layers: Vec&lt;DeviceLayerMapMetadata&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             device_layers: <span class="prelude-val">Some</span>(device_layers),
             host_layers: <span class="prelude-val">None</span>,
@@ -190,8 +267,12 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Box&lt;<span class="kw">dyn </span>DeviceMapper + Send + Sync&gt;&gt; {
         <span class="comment">// How many device layers
         // Clamp to max of model layers
-        </span><span class="kw">let </span>n_device_layers = <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = <span class="self">self</span>.device_layers {
-            n.clamp(<span class="number">0</span>, model_layers)
+        </span><span class="kw">let </span>n_device_layers = <span class="kw">if let </span><span class="prelude-val">Some</span>(layers) = <span class="kw-2">&amp;</span><span class="self">self</span>.device_layers {
+            layers
+                .iter()
+                .map(|metadata| metadata.layers)
+                .sum::&lt;usize&gt;()
+                .clamp(<span class="number">0</span>, model_layers)
         } <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(Box::new(DummyDeviceMapper {
                 nm_device: device.clone(),
@@ -203,13 +284,40 @@
             </span>.host_layers
             .unwrap_or(model_layers.saturating_sub(n_device_layers));
         <span class="kw">if </span>n_device_layers + n_host_layers != model_layers {
-            <span class="macro">candle_core::bail!</span>(<span class="string">"Expected the number of GPU ({n_device_layers}) and host layers ({n_host_layers}) to sum to the number of model hidden layers ({model_layers})"</span>);
+            <span class="macro">candle_core::bail!</span>(<span class="string">"Expected the total number of GPU ({n_device_layers}) and host layers ({n_host_layers}) to sum to the number of model hidden layers ({model_layers})"</span>);
         }
         <span class="macro">info!</span>(<span class="string">"Model has {model_layers} repeating layers."</span>);
-        <span class="macro">info!</span>(<span class="string">"Using {n_device_layers} repeating layers on GPU and {n_host_layers} repeating layers on host."</span>);
-        <span class="kw">let </span><span class="kw-2">mut </span>combined = <span class="macro">vec!</span>[device.clone(); n_device_layers];
+
+        <span class="comment">// Handle multi-GPU mapping here
+        </span><span class="kw">let </span><span class="kw-2">mut </span>combined = Vec::with_capacity(model_layers);
+        <span class="kw">if </span><span class="self">self
+            </span>.device_layers
+            .as_ref()
+            .is_some_and(|layers| layers.len() == <span class="number">1</span>)
+        {
+            combined.extend(<span class="macro">vec!</span>[device.clone(); n_device_layers]);
+        } <span class="kw">else </span>{
+            <span class="kw">for </span>DeviceLayerMapMetadata { ordinal, layers } <span class="kw">in </span><span class="self">self</span>.device_layers.as_ref().unwrap() {
+                <span class="kw">let </span>dev = <span class="kw">match </span>device {
+                    Device::Cpu =&gt; Device::Cpu,
+                    Device::Cuda(<span class="kw">_</span>) =&gt; Device::cuda_if_available(<span class="kw-2">*</span>ordinal)<span class="question-mark">?</span>,
+                    Device::Metal(<span class="kw">_</span>) =&gt; Device::new_metal(<span class="kw-2">*</span>ordinal)<span class="question-mark">?</span>,
+                };
+                combined.extend(<span class="macro">vec!</span>[dev; <span class="kw-2">*</span>layers]);
+            }
+        }
+
         <span class="comment">// Always put the CPU layers at the end so that we reduce dtoh and htod copies
         </span>combined.extend(<span class="macro">vec!</span>[Device::Cpu; n_host_layers]);
+
+        <span class="comment">// Sanity
+        </span><span class="macro">assert_eq!</span>(combined.len(), model_layers);
+
+        <span class="macro">info!</span>(<span class="string">"Loading model according to the following repeating layer mappings:"</span>);
+        <span class="kw">for </span>(i, dev) <span class="kw">in </span>combined.iter().enumerate() {
+            <span class="macro">info!</span>(<span class="string">"Layer {i}: {}"</span>, dev.device_pretty_repr());
+        }
+
         <span class="prelude-val">Ok</span>(Box::new(LayerDeviceMapper {
             mappings: combined,
             nm_device: device.clone(),
@@ -218,9 +326,12 @@
 }
 
 <span class="kw">pub trait </span>DeviceMapper: Debug {
-    <span class="doccomment">/// Map during runtime
+    <span class="comment">// === DURING RUNTIME ===
+    </span><span class="doccomment">/// Map during runtime
     </span><span class="kw">fn </span>map(<span class="kw-2">&amp;</span><span class="self">self</span>, input: Tensor, layer: usize) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt;;
-    <span class="doccomment">/// If ISQ layer, then do not change the device. *They will do it later in NormalModel::quantize*
+
+    <span class="comment">// === DURING LOADING TIME ===
+    </span><span class="doccomment">/// If ISQ layer, then do not change the device. *They will do it later in NormalModel::quantize*
     </span><span class="kw">fn </span>set_device&lt;<span class="lifetime">'a</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         layer: usize,
@@ -229,9 +340,14 @@
     ) -&gt; VarBuilder&lt;<span class="lifetime">'a</span>&gt;;
     <span class="doccomment">/// If ISQ layer, then do not change the device (return None). *They will do it later in NormalModel::quantize*
     </span><span class="kw">fn </span>device_for(<span class="kw-2">&amp;</span><span class="self">self</span>, layer: usize, loading_isq: bool) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Device&gt;;
+    <span class="doccomment">/// If ISQ layer, then do not change the device (return None). *They will do it later in NormalModel::quantize*
+    </span><span class="kw">fn </span>cast_nm_device(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor, loading_isq: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt;;
     <span class="doccomment">/// Set non mapped layer device. This is for ISQ + device mapping support
     /// If ISQ layer, then do not change the device. *They will do it later in NormalModel::quantize*
     </span><span class="kw">fn </span>set_nm_device&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, varbuilder: VarBuilder&lt;<span class="lifetime">'a</span>&gt;, loading_isq: bool) -&gt; VarBuilder&lt;<span class="lifetime">'a</span>&gt;;
+
+    <span class="comment">// === IMMEDIATELY AFTER INIT ===
+    </span><span class="kw">fn </span>get_min_dtype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;DType&gt;;
 }
 
 <span class="attr">#[derive(Debug)]
@@ -262,12 +378,24 @@
         }
         <span class="self">self</span>.mappings.get(layer)
     }
+    <span class="kw">fn </span>cast_nm_device(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor, loading_isq: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">if </span>loading_isq {
+            x.to_device(<span class="kw-2">&amp;</span>Device::Cpu)
+        } <span class="kw">else </span>{
+            x.to_device(<span class="kw-2">&amp;</span><span class="self">self</span>.nm_device)
+        }
+    }
     <span class="kw">fn </span>set_nm_device&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, varbuilder: VarBuilder&lt;<span class="lifetime">'a</span>&gt;, loading_isq: bool) -&gt; VarBuilder&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">if </span>loading_isq {
             varbuilder
         } <span class="kw">else </span>{
             varbuilder.set_device(<span class="self">self</span>.nm_device.clone())
         }
+    }
+    <span class="kw">fn </span>get_min_dtype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;DType&gt; {
+        ModelDType::Auto
+            .try_into_dtype_all(<span class="kw-2">&amp;</span><span class="self">self</span>.mappings)
+            .map_err(|e| candle_core::Error::Msg(<span class="macro">format!</span>(<span class="string">"{e:?}"</span>)))
     }
 }
 
@@ -298,12 +426,24 @@
         }
         <span class="prelude-val">None
     </span>}
+    <span class="kw">fn </span>cast_nm_device(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor, loading_isq: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">if </span>loading_isq {
+            x.to_device(<span class="kw-2">&amp;</span>Device::Cpu)
+        } <span class="kw">else </span>{
+            x.to_device(<span class="kw-2">&amp;</span><span class="self">self</span>.nm_device)
+        }
+    }
     <span class="kw">fn </span>set_nm_device&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, varbuilder: VarBuilder&lt;<span class="lifetime">'a</span>&gt;, loading_isq: bool) -&gt; VarBuilder&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">if </span>loading_isq {
             varbuilder.set_device(Device::Cpu)
         } <span class="kw">else </span>{
             varbuilder.set_device(<span class="self">self</span>.nm_device.clone())
         }
+    }
+    <span class="kw">fn </span>get_min_dtype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;DType&gt; {
+        ModelDType::Auto
+            .try_into_dtype(<span class="kw-2">&amp;</span><span class="self">self</span>.nm_device)
+            .map_err(|e| candle_core::Error::Msg(<span class="macro">format!</span>(<span class="string">"{e:?}"</span>)))
     }
 }
 </code></pre></div></section></main></body></html>

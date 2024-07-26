@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../mistralrs_core/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -417,6 +417,34 @@
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
 <a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
 </pre></div><pre class="rust"><code><span class="attr">#![deny(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
 
 </span><span class="kw">use </span>cublaslt::setup_cublas_lt_wrapper;
@@ -446,16 +474,24 @@
 <span class="kw">mod </span>model_loader;
 <span class="kw">mod </span>ops;
 <span class="kw">pub use </span>model_loader::{get_model_dtype, get_tgt_non_granular_index, LoaderBuilder};
+
 <span class="kw">mod </span>model_selected;
 <span class="kw">pub use </span>model_selected::ModelSelected;
 <span class="kw">pub use </span>toml_selector::get_toml_selected_model_dtype;
 
+<span class="kw">mod </span>amoe;
 <span class="kw">mod </span>cublaslt;
+<span class="attr">#[cfg(not(all(feature = <span class="string">"cuda"</span>, target_family = <span class="string">"unix"</span>)))]
+</span><span class="kw">mod </span>dummy_paged_attention;
 <span class="kw">mod </span>gguf;
 <span class="kw">pub mod </span>layers;
 <span class="kw">mod </span>layers_masker;
 <span class="kw">mod </span>layers_utils;
 <span class="kw">mod </span>models;
+<span class="attr">#[cfg(all(feature = <span class="string">"cuda"</span>, target_family = <span class="string">"unix"</span>))]
+</span><span class="kw">mod </span>paged_attention;
+<span class="attr">#[cfg(not(all(feature = <span class="string">"cuda"</span>, target_family = <span class="string">"unix"</span>)))]
+</span><span class="kw">use </span>dummy_paged_attention <span class="kw">as </span>paged_attention;
 <span class="kw">mod </span>pipeline;
 <span class="kw">mod </span>prefix_cacher;
 <span class="kw">mod </span>request;
@@ -468,26 +504,31 @@
 <span class="kw">mod </span>vision_models;
 <span class="kw">mod </span>xlora_models;
 
-<span class="kw">pub use </span>device_map::{DeviceMapMetadata, LayerDeviceMapper};
+<span class="kw">pub use </span>amoe::{AnyMoeConfig, AnyMoeExpertType};
+<span class="kw">pub use </span>device_map::{DeviceLayerMapMetadata, DeviceMapMetadata, LayerDeviceMapper};
+<span class="kw">pub use </span>paged_attention::PagedAttentionConfig;
 <span class="kw">pub use </span>pipeline::{
-    chat_template::ChatTemplate, GGMLLoader, GGMLLoaderBuilder, GGMLSpecificConfig,
-    GGUFArchitecture, GGUFLoader, GGUFLoaderBuilder, GGUFSpecificConfig, GemmaLoader,
-    Idefics2Loader, LlamaLoader, Loader, LocalModelPaths, MistralLoader, MixtralLoader, ModelKind,
-    ModelPaths, NormalLoader, NormalLoaderBuilder, NormalLoaderType, NormalSpecificConfig,
-    Phi2Loader, Phi3Loader, Phi3VLoader, Qwen2Loader, SpeculativeConfig, SpeculativeLoader,
-    SpeculativePipeline, TokenSource, VisionLoader, VisionLoaderBuilder, VisionLoaderType,
+    chat_template::ChatTemplate, AnyMoeLoader, AnyMoePipeline, GGMLLoader, GGMLLoaderBuilder,
+    GGMLSpecificConfig, GGUFArchitecture, GGUFLoader, GGUFLoaderBuilder, GGUFSpecificConfig,
+    GemmaLoader, Idefics2Loader, LLaVALoader, LLaVANextLoader, LlamaLoader, Loader,
+    LocalModelPaths, MistralLoader, MixtralLoader, ModelKind, ModelPaths, NormalLoader,
+    NormalLoaderBuilder, NormalLoaderType, NormalSpecificConfig, Phi2Loader, Phi3Loader,
+    Phi3VLoader, Qwen2Loader, SpeculativeConfig, SpeculativeLoader, SpeculativePipeline,
+    Starcoder2Loader, TokenSource, VisionLoader, VisionLoaderBuilder, VisionLoaderType,
     VisionModelLoader, VisionSpecificConfig,
 };
 <span class="kw">pub use </span>request::{Constraint, MessageContent, NormalRequest, Request, RequestMessage};
 <span class="kw">pub use </span>response::Response;
 <span class="kw">pub use </span>response::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>sampler::{SamplingParams, StopTokens, TopLogprob};
-<span class="kw">pub use </span>scheduler::SchedulerMethod;
+<span class="kw">pub use </span>scheduler::{DefaultSchedulerMethod, SchedulerConfig};
 <span class="kw">use </span>serde::Serialize;
 <span class="kw">use </span>tokio::runtime::Runtime;
 <span class="kw">use </span>toml_selector::{TomlLoaderArgs, TomlSelector};
 <span class="kw">pub use </span>utils::debug::initialize_logging;
+<span class="kw">pub use </span>utils::memory_usage::MemoryUsage;
 <span class="kw">pub use </span>utils::normal::{ModelDType, TryIntoDType};
+<span class="kw">pub use </span>utils::paged_attn_supported;
 
 <span class="doccomment">/// `true` if `MISTRALRS_DEBUG=1`
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEBUG: AtomicBool = AtomicBool::new(<span class="bool-val">false</span>);
@@ -509,12 +550,13 @@
 <span class="attr">#[derive(Clone)]
 </span><span class="kw">struct </span>RebootState {
     pipeline: Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline&gt;&gt;,
-    method: SchedulerMethod,
+    method: SchedulerConfig,
     truncate_sequence: bool,
     no_kv_cache: bool,
     no_prefix_cache: bool,
     prefix_cache_n: usize,
     disable_eos_stop: bool,
+    throughput_logging_enabled: bool,
 }
 
 <span class="attr">#[derive(Debug)]
@@ -543,7 +585,7 @@
 /// instance stays on the calling thread.
 </span><span class="kw">pub struct </span>MistralRsBuilder {
     pipeline: Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline&gt;&gt;,
-    method: SchedulerMethod,
+    method: SchedulerConfig,
     log: <span class="prelude-ty">Option</span>&lt;String&gt;,
     truncate_sequence: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     no_kv_cache: <span class="prelude-ty">Option</span>&lt;bool&gt;,
@@ -551,10 +593,11 @@
     prefix_cache_n: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     disable_eos_stop: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     gemm_full_precision_f16: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    throughput_logging_enabled: <span class="prelude-ty">Option</span>&lt;()&gt;,
 }
 
 <span class="kw">impl </span>MistralRsBuilder {
-    <span class="kw">pub fn </span>new(pipeline: Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline&gt;&gt;, method: SchedulerMethod) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>new(pipeline: Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline&gt;&gt;, method: SchedulerConfig) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             pipeline,
             method,
@@ -565,6 +608,7 @@
             prefix_cache_n: <span class="prelude-val">None</span>,
             disable_eos_stop: <span class="prelude-val">None</span>,
             gemm_full_precision_f16: <span class="prelude-val">None</span>,
+            throughput_logging_enabled: <span class="prelude-val">None</span>,
         }
     }
     <span class="kw">pub fn </span>with_log(<span class="kw-2">mut </span><span class="self">self</span>, log: String) -&gt; <span class="self">Self </span>{
@@ -597,6 +641,10 @@
     </span>}
     <span class="kw">pub fn </span>with_gemm_full_precision_f16(<span class="kw-2">mut </span><span class="self">self</span>, gemm_full_precision: bool) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.gemm_full_precision_f16 = <span class="prelude-val">Some</span>(gemm_full_precision);
+        <span class="self">self
+    </span>}
+    <span class="kw">pub fn </span>with_throughput_logging(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.throughput_logging_enabled = <span class="prelude-val">Some</span>(());
         <span class="self">self
     </span>}
 
@@ -654,6 +702,7 @@
             prefix_cache_n,
             disable_eos_stop,
             gemm_full_precision_f16,
+            throughput_logging_enabled,
         } = config;
 
         <span class="kw">let </span>model_supports_reduced_gemm = <span class="kw">match </span>pipeline.try_lock().unwrap().category() {
@@ -679,6 +728,7 @@
             no_prefix_cache,
             prefix_cache_n,
             disable_eos_stop,
+            throughput_logging_enabled: throughput_logging_enabled.is_some(),
         };
 
         <span class="kw">let </span>(tx, rx) = channel(<span class="number">10_000</span>);
@@ -699,6 +749,9 @@
                     prefix_cache_n,
                     disable_eos_stop,
                 );
+                <span class="kw">if </span>throughput_logging_enabled.is_some() {
+                    engine.enable_throughput_logging();
+                }
                 engine.run().<span class="kw">await</span>;
             });
         });
@@ -749,6 +802,9 @@
                         reboot_state.prefix_cache_n,
                         reboot_state.disable_eos_stop,
                     );
+                    <span class="kw">if </span>reboot_state.throughput_logging_enabled {
+                        engine.enable_throughput_logging();
+                    }
                     engine.run().<span class="kw">await</span>;
                 });
             });

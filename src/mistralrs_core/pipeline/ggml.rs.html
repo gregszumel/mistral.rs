@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/ggml.rs`."><title>ggml.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../mistralrs_core/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/ggml.rs`."><title>ggml.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -499,6 +499,37 @@
 <a href="#499" id="499">499</a>
 <a href="#500" id="500">500</a>
 <a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::cache_manager::DefaultCacheManager;
 <span class="kw">use super</span>::{
     get_model_paths, get_xlora_paths, text_models_inputs_processor::ModelInputs, AdapterKind,
@@ -506,22 +537,25 @@
     XLoraPaths,
 };
 <span class="kw">use super</span>::{
-    AdapterActivationMixin, CacheManagerMixin, IsqPipelineMixin, MetadataMixin, ModelCategory,
-    PreProcessingMixin,
+    AdapterActivationMixin, AnyMoePipelineMixin, CacheManagerMixin, IsqPipelineMixin,
+    MetadataMixin, ModelCategory, PreProcessingMixin,
 };
 <span class="kw">use </span><span class="kw">crate</span>::aici::bintokens::build_tok_trie;
 <span class="kw">use </span><span class="kw">crate</span>::aici::toktree::TokTrie;
 <span class="kw">use </span><span class="kw">crate</span>::lora::Ordering;
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::chat_template::{calculate_eos_tokens, GenerationConfig};
+<span class="kw">use </span><span class="kw">crate</span>::pipeline::sampling::sample_and_add_toks;
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::{get_chat_template, Cache};
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::{ChatTemplate, LocalModelPaths};
 <span class="kw">use </span><span class="kw">crate</span>::prefix_cacher::PrefixCacheManager;
 <span class="kw">use </span><span class="kw">crate</span>::sequence::Sequence;
+<span class="kw">use </span><span class="kw">crate</span>::utils::debug::DeviceRepr;
 <span class="kw">use </span><span class="kw">crate</span>::utils::model_config <span class="kw">as </span>ModelConfig;
 <span class="kw">use </span><span class="kw">crate</span>::utils::tokenizer::get_tokenizer;
 <span class="kw">use </span><span class="kw">crate</span>::xlora_models::NonGranularState;
 <span class="kw">use crate</span>::{
-    do_sample, get_mut_arcmutex, get_paths, DeviceMapMetadata, Pipeline, TryIntoDType, DEBUG,
+    get_mut_arcmutex, get_paths, DeviceMapMetadata, PagedAttentionConfig, Pipeline, TryIntoDType,
+    DEBUG,
 };
 <span class="kw">use crate</span>::{
     models::quantized_llama::ModelWeights <span class="kw">as </span>QLlama, utils::tokens::get_token,
@@ -529,7 +563,7 @@
 };
 <span class="kw">use </span>anyhow::Result;
 <span class="kw">use </span>candle_core::quantized::{ggml_file, GgmlDType};
-<span class="kw">use </span>candle_core::{Device, Tensor};
+<span class="kw">use </span>candle_core::{DType, Device, Tensor};
 <span class="kw">use </span>hf_hub::{api::sync::ApiBuilder, Repo, RepoType};
 <span class="kw">use </span>rand_isaac::Isaac64Rng;
 <span class="kw">use </span>std::any::Any;
@@ -549,12 +583,11 @@
 <span class="kw">pub struct </span>GGMLPipeline {
     model: Model,
     tokenizer: Arc&lt;Tokenizer&gt;,
-    tok_trie: Arc&lt;TokTrie&gt;,
     no_kv_cache: bool,
     chat_template: Arc&lt;ChatTemplate&gt;,
     model_id: String,
     non_granular_state: <span class="prelude-ty">Option</span>&lt;NonGranularState&gt;,
-    metadata: GeneralMetadata,
+    metadata: Arc&lt;GeneralMetadata&gt;,
 }
 
 <span class="doccomment">/// A loader for a GGML model.
@@ -733,6 +766,7 @@
         silent: bool,
         mapper: DeviceMapMetadata,
         in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+        paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">if </span>in_situ_quant.is_some() {
             <span class="macro">anyhow::bail!</span>(
@@ -742,7 +776,11 @@
         <span class="kw">if </span>!mapper.is_dummy() {
             <span class="macro">warn!</span>(<span class="string">"GGML models do not support device mapping. Device mapping will not work. Please consider using a GGUF model."</span>);
         }
-        <span class="macro">info!</span>(<span class="string">"Loading model `{}` on {device:?}..."</span>, <span class="self">self</span>.get_id());
+        <span class="macro">info!</span>(
+            <span class="string">"Loading model `{}` on {}."</span>,
+            <span class="self">self</span>.get_id(),
+            device.device_pretty_repr()
+        );
 
         <span class="kw">let </span><span class="kw-2">mut </span>file = std::fs::File::open(paths.get_weight_filenames().first().unwrap())<span class="question-mark">?</span>;
         <span class="kw">let </span>model = ggml_file::Content::read(<span class="kw-2">&amp;mut </span>file, device)
@@ -766,6 +804,13 @@
 
             <span class="macro">info!</span>(<span class="string">"Debug is enabled, wrote the names and information about each tensor to `mistralrs_ggml_tensors.txt`."</span>);
         }
+
+        <span class="kw">let _ </span>= <span class="kw">if </span>paged_attn_config.is_none() {
+            <span class="macro">warn!</span>(<span class="string">"GGML does not currently support PagedAttention, running without"</span>);
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            paged_attn_config
+        };
 
         <span class="kw">let </span>has_adapter = <span class="self">self</span>.kind.is_adapted();
         <span class="kw">let </span>is_xlora = <span class="self">self</span>.kind.is_adapted_and(|a| a.is_x_lora());
@@ -816,7 +861,6 @@
         <span class="kw">let </span>eos = calculate_eos_tokens(<span class="kw-2">&amp;</span>chat_template, gen_conf, <span class="kw-2">&amp;</span>tokenizer);
         <span class="prelude-val">Ok</span>(Arc::new(Mutex::new(GGMLPipeline {
             model,
-            tok_trie: tok_trie.clone(),
             tokenizer: tokenizer.into(),
             no_kv_cache: <span class="self">self</span>.no_kv_cache,
             chat_template: Arc::new(chat_template),
@@ -827,7 +871,7 @@
                     tgt_non_granular_index,
                 }
             }),
-            metadata: GeneralMetadata {
+            metadata: Arc::new(GeneralMetadata {
                 max_seq_len,
                 repeat_last_n: <span class="self">self</span>.config.repeat_last_n,
                 tok_trie,
@@ -836,7 +880,11 @@
                 eos_tok: eos,
                 kind: <span class="self">self</span>.kind.clone(),
                 is_xlora,
-            },
+                activation_dtype: DType::F32,
+                sliding_window: <span class="prelude-val">None</span>,
+                cache_config: <span class="prelude-val">None</span>,
+                cache_engine: <span class="prelude-val">None</span>,
+            }),
         })))
     }
 
@@ -850,6 +898,7 @@
         silent: bool,
         mapper: DeviceMapMetadata,
         in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+        paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">let </span>paths: anyhow::Result&lt;Box&lt;<span class="kw">dyn </span>ModelPaths&gt;&gt; = <span class="macro">get_paths!</span>(
             LocalModelPaths,
@@ -860,7 +909,15 @@
             <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="self">self</span>.quantized_filename.as_ref().unwrap().clone()]),
             silent
         );
-        <span class="self">self</span>.load_model_from_path(<span class="kw-2">&amp;</span>paths<span class="question-mark">?</span>, dtype, device, silent, mapper, in_situ_quant)
+        <span class="self">self</span>.load_model_from_path(
+            <span class="kw-2">&amp;</span>paths<span class="question-mark">?</span>,
+            dtype,
+            device,
+            silent,
+            mapper,
+            in_situ_quant,
+            paged_attn_config,
+        )
     }
 
     <span class="kw">fn </span>get_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
@@ -893,13 +950,13 @@
 }
 
 <span class="kw">impl </span>CacheManagerMixin <span class="kw">for </span>GGMLPipeline {
-    <span class="kw">fn </span>clone_in_cache(<span class="kw-2">&amp;mut </span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
+    <span class="kw">fn </span>clone_in_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
         DefaultCacheManager.clone_in_cache(<span class="self">self</span>, seqs, modify_draft_cache)
     }
-    <span class="kw">fn </span>clone_out_cache(<span class="kw-2">&amp;mut </span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
+    <span class="kw">fn </span>clone_out_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
         DefaultCacheManager.clone_out_cache(<span class="self">self</span>, seqs, modify_draft_cache)
     }
-    <span class="kw">fn </span>set_none_cache(<span class="kw-2">&amp;mut </span><span class="self">self</span>, reset_non_granular: bool, modify_draft_cache: bool) {
+    <span class="kw">fn </span>set_none_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, reset_non_granular: bool, modify_draft_cache: bool) {
         DefaultCacheManager.set_none_cache(<span class="self">self</span>, modify_draft_cache);
         <span class="kw">if </span>reset_non_granular {
             <span class="self">self</span>.reset_non_granular_state()
@@ -948,14 +1005,14 @@
             <span class="kw-2">*</span><span class="macro">get_mut_arcmutex!</span>(s.non_granular_index) = <span class="number">0</span>;
         }
     }
-    <span class="kw">fn </span>get_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>GeneralMetadata {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.metadata
+    <span class="kw">fn </span>get_metadata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;GeneralMetadata&gt; {
+        <span class="self">self</span>.metadata.clone()
     }
 }
 
 <span class="attr">#[async_trait::async_trait]
 </span><span class="kw">impl </span>Pipeline <span class="kw">for </span>GGMLPipeline {
-    <span class="kw">fn </span>forward_inputs(<span class="kw-2">&amp;mut </span><span class="self">self</span>, inputs: Box&lt;<span class="kw">dyn </span>Any&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor, candle_core::Error&gt; {
+    <span class="kw">fn </span>forward_inputs(<span class="kw-2">&amp;</span><span class="self">self</span>, inputs: Box&lt;<span class="kw">dyn </span>Any&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor, candle_core::Error&gt; {
         <span class="kw">let </span>ModelInputs {
             input_ids,
             input_ids_full,
@@ -964,16 +1021,18 @@
             seqlen_offsets_kernel,
             seqlen_offsets_kernel_full,
             context_lens,
-            position_ids: <span class="kw">_</span>, <span class="comment">// NOTE(EricLBuehler): ignore, it is for phi3
+            position_ids: <span class="kw">_</span>,    <span class="comment">// NOTE(EricLBuehler): ignore, it is for phi3
+            </span>paged_attn_meta: <span class="kw">_</span>, <span class="comment">// NOTE(EricLBuehler): ignore it for ggml
         </span>} = <span class="kw-2">*</span>inputs.downcast().expect(<span class="string">"Downcast failed."</span>);
         <span class="kw">match </span><span class="self">self</span>.model {
-            Model::Llama(<span class="kw-2">ref mut </span>model) =&gt; model.forward(
+            Model::Llama(<span class="kw-2">ref </span>model) =&gt; model.forward(
                 <span class="kw-2">&amp;</span>input_ids,
                 <span class="kw-2">&amp;</span>seqlen_offsets,
                 seqlen_offsets_kernel,
                 context_lens,
+                <span class="prelude-val">None</span>,
             ),
-            Model::XLoraLlama(<span class="kw-2">ref mut </span>model) =&gt; model.forward(
+            Model::XLoraLlama(<span class="kw-2">ref </span>model) =&gt; model.forward(
                 <span class="kw-2">&amp;</span>input_ids,
                 input_ids_full.as_ref().unwrap_or(<span class="kw-2">&amp;</span>input_ids),
                 <span class="kw-2">&amp;</span>seqlen_offsets,
@@ -994,10 +1053,13 @@
         disable_eos_stop: bool,
         rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(), candle_core::Error&gt; {
-        <span class="macro">do_sample!</span>(<span class="self">self</span>, seqs, logits, prefix_cacher, disable_eos_stop, rng)
-    }
+        sample_and_add_toks(<span class="self">self</span>, seqs, logits, prefix_cacher, disable_eos_stop, rng).<span class="kw">await
+    </span>}
     <span class="kw">fn </span>category(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ModelCategory {
         ModelCategory::Text
     }
 }
+
+<span class="comment">// TODO
+</span><span class="kw">impl </span>AnyMoePipelineMixin <span class="kw">for </span>GGMLPipeline {}
 </code></pre></div></section></main></body></html>
