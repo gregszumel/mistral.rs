@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-server/src/main.rs`."><title>main.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-server/src/main.rs`."><title>main.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_server/</div>main.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -446,32 +447,76 @@
 <a href="#446" id="446">446</a>
 <a href="#447" id="447">447</a>
 <a href="#448" id="448">448</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>anyhow::Result;
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a></pre></div><pre class="rust"><code><span class="kw">use </span>anyhow::Result;
 <span class="kw">use </span>axum::{
     extract::{DefaultBodyLimit, Json, State},
     http::{<span class="self">self</span>, Method},
     routing::{get, post},
     Router,
 };
-<span class="kw">use </span>candle_core::{quantized::GgmlDType, Device};
+<span class="kw">use </span>candle_core::Device;
 <span class="kw">use </span>clap::Parser;
-<span class="kw">use </span>either::Either;
 <span class="kw">use </span>mistralrs_core::{
     get_model_dtype, get_tgt_non_granular_index, initialize_logging, paged_attn_supported,
-    DefaultSchedulerMethod, DeviceLayerMapMetadata, DeviceMapMetadata, Loader, LoaderBuilder,
-    MistralRs, MistralRsBuilder, ModelSelected, PagedAttentionConfig, Request, SchedulerConfig,
-    TokenSource,
+    parse_isq_value, DefaultSchedulerMethod, DeviceLayerMapMetadata, DeviceMapMetadata, IsqType,
+    Loader, LoaderBuilder, MemoryGpuConfig, MistralRs, MistralRsBuilder, ModelSelected,
+    PagedAttentionConfig, Request, SchedulerConfig, TokenSource,
 };
-<span class="kw">use </span>openai::{ChatCompletionRequest, Message, ModelObjects, StopTokens};
+<span class="kw">use </span>openai::{
+    ChatCompletionRequest, CompletionRequest, ImageGenerationRequest, Message, ModelObjects,
+    StopTokens,
+};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
-<span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>std::{num::NonZeroUsize, sync::Arc};
+
 <span class="kw">mod </span>chat_completion;
 <span class="kw">mod </span>completions;
-<span class="kw">use crate</span>::{chat_completion::__path_chatcompletions, completions::completions};
-
-<span class="kw">use crate</span>::{chat_completion::chatcompletions, openai::ModelObject};
+<span class="kw">mod </span>image_generation;
 <span class="kw">mod </span>interactive_mode;
 <span class="kw">mod </span>openai;
+<span class="kw">mod </span>util;
+
+<span class="kw">use </span><span class="kw">crate</span>::openai::ModelObject;
+<span class="kw">use crate</span>::{
+    chat_completion::{__path_chatcompletions, chatcompletions},
+    completions::completions,
+    image_generation::image_generation,
+};
 
 <span class="kw">use </span>interactive_mode::interactive_mode;
 <span class="kw">use </span>tower_http::cors::{AllowOrigin, CorsLayer};
@@ -487,30 +532,16 @@
     s.parse()
 }
 
-<span class="kw">fn </span>parse_isq(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;GgmlDType, String&gt; {
-    <span class="kw">match </span>s {
-        <span class="string">"Q4_0" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q4_0),
-        <span class="string">"Q4_1" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q4_1),
-        <span class="string">"Q5_0" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q5_0),
-        <span class="string">"Q5_1" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q5_1),
-        <span class="string">"Q8_0" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q8_0),
-        <span class="string">"Q8_1" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q8_1),
-        <span class="string">"Q2K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q2K),
-        <span class="string">"Q3K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q3K),
-        <span class="string">"Q4K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q4K),
-        <span class="string">"Q5K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q5K),
-        <span class="string">"Q6K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q6K),
-        <span class="string">"Q8K" </span>=&gt; <span class="prelude-val">Ok</span>(GgmlDType::Q8K),
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"GGML type {s} unknown, choose one of `Q4_0`, `Q4_1`, `Q5_0`, `Q5_1`, `Q8_0`, `Q8_1`, `Q2K`, `Q3K`, `Q4K`, `Q5K`, `Q6K`, `Q8K`."</span>)),
-    }
-}
-
 <span class="attr">#[derive(Parser)]
 #[command(version, about, long_about = <span class="prelude-val">None</span>)]
 </span><span class="kw">struct </span>Args {
     <span class="doccomment">/// IP to serve on. Defaults to "0.0.0.0"
     </span><span class="attr">#[arg(long)]
     </span>serve_ip: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
+    <span class="doccomment">/// Integer seed to ensure reproducible random number generation.
+    </span><span class="attr">#[arg(short, long)]
+    </span>seed: <span class="prelude-ty">Option</span>&lt;u64&gt;,
 
     <span class="doccomment">/// Port to serve on.
     </span><span class="attr">#[arg(short, long)]
@@ -549,13 +580,9 @@
     </span><span class="attr">#[arg(long, default_value_t = TokenSource::CacheToken, value_parser = parse_token_source)]
     </span>token_source: TokenSource,
 
-    <span class="doccomment">/// Enter interactive mode instead of serving a chat server. Exclusive to `--vi` (vision interactive mode).
+    <span class="doccomment">/// Enter interactive mode instead of serving a chat server.
     </span><span class="attr">#[clap(long, short, action)]
     </span>interactive_mode: bool,
-
-    <span class="doccomment">/// Enter vision interactive mode instead of serving a chat server. Exclusive to `--interactive-mode/-i`.
-    </span><span class="attr">#[clap(long = <span class="string">"vi"</span>, action)]
-    </span>vision_interactive_mode: bool,
 
     <span class="doccomment">/// Number of prefix caches to hold on the device. Other caches are evicted to the CPU based on a LRU strategy.
     </span><span class="attr">#[arg(long, default_value_t = <span class="number">16</span>)]
@@ -568,19 +595,27 @@
     </span>num_device_layers: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
 
     <span class="doccomment">/// In-situ quantization to apply. You may specify one of the GGML data type (except F32 or F16): formatted like this: `Q4_0` or `Q4K`.
-    </span><span class="attr">#[arg(long = <span class="string">"isq"</span>, value_parser = parse_isq)]
-    </span>in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+    </span><span class="attr">#[arg(long = <span class="string">"isq"</span>, value_parser = parse_isq_value)]
+    </span>in_situ_quant: <span class="prelude-ty">Option</span>&lt;IsqType&gt;,
 
-    <span class="doccomment">/// GPU memory to allocate for KV cache with PagedAttention in MBs. If this is not set and the device is CUDA, it will default to
-    /// using `pa-gpu-mem-usage` set to `0.9`. PagedAttention is only supported on CUDA and is always automatically activated.
+    <span class="doccomment">/// GPU memory to allocate for KV cache with PagedAttention in MBs.
+    /// PagedAttention is only supported on CUDA and is always automatically activated.
+    /// The priority is as follows: `pa-gpu-mem-usage` (default = 0.9) &gt; `pa-ctxt-len` &gt; `pa-gpu-mem`.
     </span><span class="attr">#[arg(long = <span class="string">"pa-gpu-mem"</span>)]
     </span>paged_attn_gpu_mem: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 
     <span class="doccomment">/// Percentage of GPU memory to utilize after allocation of KV cache with PagedAttention, from 0 to 1.
-    /// If this is not set and the device is CUDA, it will default to `0.9`. PagedAttention is only supported on CUDA and is always automatically activated.
-    /// This is always used over `pa-gpu-mem` if both are specified.
+    /// If this is not set and the device is CUDA, it will default to `0.9`.
+    /// PagedAttention is only supported on CUDA and is always automatically activated.
+    /// The priority is as follows: `pa-gpu-mem-usage` (default = 0.9) &gt; `pa-ctxt-len` &gt; `pa-gpu-mem`.
     </span><span class="attr">#[arg(long = <span class="string">"pa-gpu-mem-usage"</span>)]
     </span>paged_attn_gpu_mem_usage: <span class="prelude-ty">Option</span>&lt;f32&gt;,
+
+    <span class="doccomment">/// Total context length to allocate the KV cache for (total number of tokens which the KV cache can hold)
+    /// when using PagedAttention, which is only supported on CUDA and is always automatically activated.
+    /// The priority is as follows: `pa-gpu-mem-usage` (default = 0.9) &gt; `pa-ctxt-len` &gt; `pa-gpu-mem`.
+    </span><span class="attr">#[arg(long = <span class="string">"pa-ctxt-len"</span>)]
+    </span>paged_ctxt_len: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 
     <span class="doccomment">/// Block size (number of tokens per block) for PagedAttention. If this is not set and the device is CUDA, it will default to 32.
     /// PagedAttention is only supported on CUDA and is always automatically activated.
@@ -591,9 +626,13 @@
     </span><span class="attr">#[arg(long = <span class="string">"no-paged-attn"</span>, default_value_t = <span class="bool-val">false</span>)]
     </span>no_paged_attn: bool,
 
-    <span class="doccomment">/// Enable server throughput logging when not using interactive mode
+    <span class="doccomment">/// Enable server throughput logging, supported in the server and with interactive mode
     </span><span class="attr">#[arg(long = <span class="string">"throughput"</span>, default_value_t = <span class="bool-val">false</span>)]
     </span>throughput_log: bool,
+
+    <span class="doccomment">/// Number of tokens to batch the prompt step into. This can help with OOM errors when in the prompt step, but reduces performance.
+    </span><span class="attr">#[arg(long = <span class="string">"prompt-batchsize"</span>)]
+    </span>prompt_batchsize: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
 <span class="attr">#[utoipa::path(
@@ -667,7 +706,7 @@
 ) -&gt; <span class="prelude-ty">Result</span>&lt;String, String&gt; {
     <span class="kw">let </span>repr = <span class="macro">format!</span>(<span class="string">"Re ISQ: {:?}"</span>, request.ggml_type);
     MistralRs::maybe_log_request(state.clone(), repr.clone());
-    <span class="kw">let </span>request = Request::ReIsq(parse_isq(<span class="kw-2">&amp;</span>request.ggml_type)<span class="question-mark">?</span>);
+    <span class="kw">let </span>request = Request::ReIsq(parse_isq_value(<span class="kw-2">&amp;</span>request.ggml_type)<span class="question-mark">?</span>);
     state.get_sender().unwrap().send(request).<span class="kw">await</span>.unwrap();
     <span class="prelude-val">Ok</span>(repr)
 }
@@ -677,7 +716,7 @@
     #[openapi(
         paths(models, health, chatcompletions),
         components(
-            schemas(ModelObjects, ModelObject, ChatCompletionRequest, StopTokens, Message)),
+            schemas(ModelObjects, ModelObject, ChatCompletionRequest, CompletionRequest, ImageGenerationRequest, StopTokens, Message)),
         tags(
             (name = <span class="string">"Mistral.rs"</span>, description = <span class="string">"Mistral.rs API"</span>)
         ),
@@ -707,6 +746,7 @@
         .route(<span class="string">"/"</span>, get(health))
         .route(<span class="string">"/activate_adapters"</span>, post(activate_adapters))
         .route(<span class="string">"/re_isq"</span>, post(re_isq))
+        .route(<span class="string">"/v1/images/generations"</span>, post(image_generation))
         .layer(cors_layer)
         .layer(DefaultBodyLimit::max(N_INPUT_SIZE * MB_TO_B))
         .with_state(state)
@@ -729,16 +769,29 @@
         args.max_seqs = <span class="number">1</span>;
     }
 
+    <span class="kw">let </span>prompt_batchsize = <span class="kw">match </span>args.prompt_batchsize {
+        <span class="prelude-val">Some</span>(<span class="number">0</span>) =&gt; {
+            <span class="macro">anyhow::bail!</span>(<span class="string">"`prompt_batchsize` must be a strictly positive integer, got 0."</span>,)
+        }
+        <span class="prelude-val">Some</span>(x) =&gt; <span class="prelude-val">Some</span>(NonZeroUsize::new(x).unwrap()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+    };
+
     <span class="kw">let </span>loader: Box&lt;<span class="kw">dyn </span>Loader&gt; = LoaderBuilder::new(args.model)
         .with_no_kv_cache(args.no_kv_cache)
         .with_chat_template(args.chat_template)
         .with_use_flash_attn(use_flash_attn)
+        .with_prompt_batchsize(prompt_batchsize)
         .build()<span class="question-mark">?</span>;
 
     <span class="attr">#[cfg(feature = <span class="string">"metal"</span>)]
     </span><span class="kw">let </span>device = Device::new_metal(<span class="number">0</span>)<span class="question-mark">?</span>;
     <span class="attr">#[cfg(not(feature = <span class="string">"metal"</span>))]
     </span><span class="kw">let </span>device = Device::cuda_if_available(<span class="number">0</span>)<span class="question-mark">?</span>;
+
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(seed) = args.seed {
+        device.set_seed(seed)<span class="question-mark">?</span>;
+    }
 
     <span class="macro">info!</span>(
         <span class="string">"avx: {}, neon: {}, simd128: {}, f16c: {}"</span>,
@@ -799,31 +852,55 @@
         args.paged_attn_block_size,
         args.paged_attn_gpu_mem,
         args.paged_attn_gpu_mem_usage,
+        args.paged_ctxt_len,
         paged_attn_supported(),
         args.no_paged_attn,
     ) {
-        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
             block_size,
             <span class="number">512</span>,
-            Either::Right(<span class="number">0.9</span>), <span class="comment">// NOTE(EricLBuehler): default is to use 90% of memory
+            MemoryGpuConfig::Utilization(<span class="number">0.9</span>), <span class="comment">// NOTE(EricLBuehler): default is to use 90% of memory
         </span>)<span class="question-mark">?</span>),
-        (block_size, <span class="prelude-val">Some</span>(m), <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-            <span class="prelude-val">Some</span>(PagedAttentionConfig::new(block_size, <span class="number">512</span>, Either::Left(m))<span class="question-mark">?</span>)
-        }
-        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(f), <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(ctxt), <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
             block_size,
             <span class="number">512</span>,
-            Either::Right(f),
+            MemoryGpuConfig::ContextSize(ctxt),
         )<span class="question-mark">?</span>),
-        (block_size, <span class="prelude-val">Some</span>(_m), <span class="prelude-val">Some</span>(f), <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
-            <span class="macro">info!</span>(<span class="string">"Both memory size and usage were specified, defaulting to the usage value."</span>);
+        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(f), <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+            block_size,
+            <span class="number">512</span>,
+            MemoryGpuConfig::Utilization(f),
+        )<span class="question-mark">?</span>),
+        (block_size, <span class="prelude-val">Some</span>(m), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+            block_size,
+            <span class="number">512</span>,
+            MemoryGpuConfig::Amount(m),
+        )<span class="question-mark">?</span>),
+        (block_size, <span class="prelude-val">Some</span>(_m), <span class="prelude-val">Some</span>(f), <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
+            <span class="macro">info!</span>(<span class="string">"Both memory size, and usage were specified, defaulting to the usage value."</span>);
             <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
                 block_size,
                 <span class="number">512</span>,
-                Either::Right(f),
+                MemoryGpuConfig::Utilization(f),
             )<span class="question-mark">?</span>)
         }
-        (<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
+        (block_size, <span class="prelude-val">Some</span>(_m), <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(ctxt), <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
+            <span class="macro">info!</span>(<span class="string">"All memory size and ctxt len, defaulting to the context len value."</span>);
+            <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+                block_size,
+                <span class="number">512</span>,
+                MemoryGpuConfig::ContextSize(ctxt),
+            )<span class="question-mark">?</span>)
+        }
+        (block_size, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(f), <span class="prelude-val">Some</span>(_ctxt), <span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
+            <span class="macro">info!</span>(<span class="string">"Both ctxt len and usage were specified, defaulting to the usage value."</span>);
+            <span class="prelude-val">Some</span>(PagedAttentionConfig::new(
+                block_size,
+                <span class="number">512</span>,
+                MemoryGpuConfig::Utilization(f),
+            )<span class="question-mark">?</span>)
+        }
+        (<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let </span>pipeline = loader.load_model_from_hf(
@@ -839,16 +916,16 @@
     <span class="macro">info!</span>(<span class="string">"Model loaded."</span>);
 
     <span class="kw">let </span>scheduler_config = <span class="kw">if </span>cache_config.is_some() {
-        SchedulerConfig::PagedAttentionMeta {
-            max_num_seqs: args.max_seqs,
-            config: pipeline
-                .lock()
-                .<span class="kw">await
-                </span>.get_metadata()
-                .cache_config
-                .as_ref()
-                .unwrap()
-                .clone(),
+        <span class="comment">// Handle case where we may have device mapping
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cache_config) = pipeline.lock().<span class="kw">await</span>.get_metadata().cache_config {
+            SchedulerConfig::PagedAttentionMeta {
+                max_num_seqs: args.max_seqs,
+                config: cache_config.clone(),
+            }
+        } <span class="kw">else </span>{
+            SchedulerConfig::DefaultScheduler {
+                method: DefaultSchedulerMethod::Fixed(args.max_seqs.try_into().unwrap()),
+            }
         }
     } <span class="kw">else </span>{
         SchedulerConfig::DefaultScheduler {
@@ -862,13 +939,8 @@
         .with_no_kv_cache(args.no_kv_cache)
         .with_prefix_cache_n(args.prefix_cache_n);
 
-    <span class="kw">if </span>args.interactive_mode &amp;&amp; args.vision_interactive_mode {
-        <span class="macro">anyhow::bail!</span>(<span class="string">"Interactive mode and vision interactive mode are exclusive."</span>);
-    } <span class="kw">else if </span>args.interactive_mode {
-        interactive_mode(builder.build(), <span class="bool-val">false</span>).<span class="kw">await</span>;
-        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-    } <span class="kw">else if </span>args.vision_interactive_mode {
-        interactive_mode(builder.build(), <span class="bool-val">true</span>).<span class="kw">await</span>;
+    <span class="kw">if </span>args.interactive_mode {
+        interactive_mode(builder.build(), args.throughput_log).<span class="kw">await</span>;
         <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     }
 
@@ -879,7 +951,7 @@
     };
     <span class="kw">let </span>mistralrs = builder.build();
 
-    <span class="kw">let </span>port = args.port.expect(<span class="string">"Expected port to be specified."</span>);
+    <span class="kw">let </span>port = args.port.expect(<span class="string">"Interactive mode was not specified, so expected port to be specified. Perhaps you forgot `-i` or `--port`?"</span>);
 
     <span class="kw">let </span>app = get_router(mistralrs);
 

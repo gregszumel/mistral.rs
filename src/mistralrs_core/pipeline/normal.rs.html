@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/normal.rs`."><title>normal.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/normal.rs`."><title>normal.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/pipeline/</div>normal.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -626,28 +627,305 @@
 <a href="#626" id="626">626</a>
 <a href="#627" id="627">627</a>
 <a href="#628" id="628">628</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::cache_manager::DefaultCacheManager;
-<span class="kw">use </span><span class="kw">super</span>::normal_loaders::{
-    Gemma2Loader, GemmaLoader, LlamaLoader, MistralLoader, MixtralLoader, NormalLoaderType,
-    Phi2Loader, Phi3Loader, Qwen2Loader, Starcoder2Loader,
-};
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::cache_manager::{FullCacheManager, NormalCacheManager};
+<span class="kw">use </span><span class="kw">super</span>::isq::ImatrixDataSource;
+<span class="kw">use </span><span class="kw">super</span>::llg::build_tok_env;
 <span class="kw">use super</span>::{
     get_model_paths, get_xlora_paths, text_models_inputs_processor::ModelInputs, AdapterKind,
     CacheManager, GeneralMetadata, Loader, ModelKind, ModelPaths, NormalModel, NormalModelLoader,
     TokenSource, XLoraPaths,
 };
 <span class="kw">use super</span>::{
-    AdapterActivationMixin, AnyMoePipelineMixin, CacheManagerMixin, IsqPipelineMixin,
-    MetadataMixin, ModelCategory, PreProcessingMixin,
+    AdapterActivationMixin, AnyMoePipelineMixin, CacheManagerMixin, EitherCache,
+    ForwardInputsResult, IsqOrganization, IsqPipelineMixin, MetadataMixin, ModelCategory,
+    PreProcessingMixin,
 };
-<span class="kw">use </span><span class="kw">crate</span>::aici::bintokens::build_tok_trie;
-<span class="kw">use </span><span class="kw">crate</span>::aici::toktree::TokTrie;
+<span class="kw">use super</span>::{
+    AutoLoader, Gemma2Loader, GemmaLoader, LlamaLoader, MistralLoader, MixtralLoader,
+    NormalLoaderType, Phi2Loader, Phi3Loader, Phi3_5MoELoader, Qwen2Loader, Starcoder2Loader,
+};
 <span class="kw">use </span><span class="kw">crate</span>::amoe::AnyMoeExpertType;
 <span class="kw">use </span><span class="kw">crate</span>::lora::Ordering;
 <span class="kw">use </span><span class="kw">crate</span>::paged_attention::{calculate_cache_config, AttentionImplementation, CacheEngine};
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::chat_template::{calculate_eos_tokens, GenerationConfig};
+<span class="kw">use </span><span class="kw">crate</span>::pipeline::get_chat_template;
+<span class="kw">use </span><span class="kw">crate</span>::pipeline::isq::UqffFullSer;
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::sampling::sample_and_add_toks;
-<span class="kw">use </span><span class="kw">crate</span>::pipeline::{get_chat_template, Cache};
+<span class="kw">use </span><span class="kw">crate</span>::pipeline::text_models_inputs_processor::make_prompt_chunk;
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::{ChatTemplate, LocalModelPaths};
 <span class="kw">use </span><span class="kw">crate</span>::prefix_cacher::PrefixCacheManager;
 <span class="kw">use </span><span class="kw">crate</span>::sequence::Sequence;
@@ -656,21 +934,23 @@
 <span class="kw">use </span><span class="kw">crate</span>::utils::{tokens::get_token, varbuilder_utils::from_mmaped_safetensors};
 <span class="kw">use </span><span class="kw">crate</span>::xlora_models::NonGranularState;
 <span class="kw">use crate</span>::{
-    api_dir_list, api_get_file, get_mut_arcmutex, get_paths, lora_model_loader,
+    api_dir_list, api_get_file, get_mut_arcmutex, get_paths, get_uqff_paths, lora_model_loader,
     normal_model_loader, xlora_model_loader, DeviceMapMetadata, PagedAttentionConfig, Pipeline,
-    TryIntoDType,
+    Topology, TryIntoDType,
 };
 <span class="kw">use </span>anyhow::Result;
-<span class="kw">use </span>candle_core::quantized::GgmlDType;
 <span class="kw">use </span>candle_core::{Device, Tensor, Var};
 <span class="kw">use </span>hf_hub::{api::sync::ApiBuilder, Repo, RepoType};
+<span class="kw">use </span>mistralrs_quant::IsqType;
 <span class="kw">use </span>rand_isaac::Isaac64Rng;
 <span class="kw">use </span>regex_automata::meta::Regex;
 <span class="kw">use </span>std::any::Any;
 <span class="kw">use </span>std::fs;
+<span class="kw">use </span>std::num::NonZeroUsize;
 <span class="kw">use </span>std::path::{Path, PathBuf};
 <span class="kw">use </span>std::str::FromStr;
-<span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>std::sync::{Arc, RwLock};
+<span class="kw">use </span>std::time::Instant;
 <span class="kw">use </span>tokenizers::Tokenizer;
 <span class="kw">use </span>tokio::sync::Mutex;
 <span class="kw">use </span>tracing::{info, warn};
@@ -683,6 +963,14 @@
     non_granular_state: <span class="prelude-ty">Option</span>&lt;NonGranularState&gt;,
     model_id: String,
     metadata: Arc&lt;GeneralMetadata&gt;,
+    topology: <span class="prelude-ty">Option</span>&lt;Topology&gt;,
+    silent: bool,
+    organization: IsqOrganization,
+    <span class="comment">// For full UQFF serialization
+    </span>template_filename: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    generation_config: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    config: String,
+    imatrix: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
 }
 
 <span class="doccomment">/// A loader for a "normal" (non-quantized) model.
@@ -697,6 +985,9 @@
     chat_template: <span class="prelude-ty">Option</span>&lt;String&gt;,
     tokenizer_json: <span class="prelude-ty">Option</span>&lt;String&gt;,
     tgt_non_granular_index: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    token_source: RwLock&lt;<span class="prelude-ty">Option</span>&lt;TokenSource&gt;&gt;,
+    revision: RwLock&lt;<span class="prelude-ty">Option</span>&lt;String&gt;&gt;,
+    from_uqff: RwLock&lt;<span class="prelude-ty">Option</span>&lt;PathBuf&gt;&gt;,
 }
 
 <span class="attr">#[derive(Default)]
@@ -713,15 +1004,22 @@
     tgt_non_granular_index: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
-<span class="attr">#[derive(Clone, Copy, Default)]
+<span class="attr">#[derive(Clone, Default)]
 </span><span class="doccomment">/// Config specific to loading a normal model.
 </span><span class="kw">pub struct </span>NormalSpecificConfig {
     <span class="kw">pub </span>use_flash_attn: bool,
-    <span class="kw">pub </span>repeat_last_n: usize,
+    <span class="kw">pub </span>prompt_batchsize: <span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;,
+    <span class="kw">pub </span>topology: <span class="prelude-ty">Option</span>&lt;Topology&gt;,
+    <span class="kw">pub </span>organization: IsqOrganization,
+    <span class="kw">pub </span>write_uqff: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    <span class="kw">pub </span>from_uqff: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    <span class="kw">pub </span>imatrix: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    <span class="kw">pub </span>calibration_file: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
 }
 
 <span class="kw">impl </span>NormalLoaderBuilder {
-    <span class="kw">pub fn </span>new(
+    <span class="doccomment">/// NOTE: Until v0.4.0, you should make sure to call `.with_no_kv_cache` if applicable.
+    </span><span class="kw">pub fn </span>new(
         config: NormalSpecificConfig,
         chat_template: <span class="prelude-ty">Option</span>&lt;String&gt;,
         tokenizer_json: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -736,6 +1034,12 @@
             ..Default::default()
         }
     }
+
+    <span class="comment">// TODO(EricLBuehler): in 0.4.0 we can move this into the config
+    </span><span class="kw">pub fn </span>with_no_kv_cache(<span class="kw-2">mut </span><span class="self">self</span>, no_kv_cache: bool) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.no_kv_cache = no_kv_cache;
+        <span class="self">self
+    </span>}
 
     <span class="kw">fn </span>with_adapter(
         <span class="kw-2">mut </span><span class="self">self</span>,
@@ -785,19 +1089,23 @@
         <span class="self">self</span>.with_adapter(lora_model_id, lora_order, <span class="bool-val">false</span>, <span class="prelude-val">None</span>)
     }
 
-    <span class="kw">pub fn </span>build(<span class="self">self</span>, loader: NormalLoaderType) -&gt; Box&lt;<span class="kw">dyn </span>Loader&gt; {
-        <span class="kw">let </span>loader: Box&lt;<span class="kw">dyn </span>NormalModelLoader&gt; = <span class="kw">match </span>loader {
-            NormalLoaderType::Mistral =&gt; Box::new(MistralLoader),
-            NormalLoaderType::Gemma =&gt; Box::new(GemmaLoader),
-            NormalLoaderType::Llama =&gt; Box::new(LlamaLoader),
-            NormalLoaderType::Mixtral =&gt; Box::new(MixtralLoader),
-            NormalLoaderType::Phi2 =&gt; Box::new(Phi2Loader),
-            NormalLoaderType::Phi3 =&gt; Box::new(Phi3Loader),
-            NormalLoaderType::Qwen2 =&gt; Box::new(Qwen2Loader),
-            NormalLoaderType::Gemma2 =&gt; Box::new(Gemma2Loader),
-            NormalLoaderType::Starcoder2 =&gt; Box::new(Starcoder2Loader),
+    <span class="doccomment">/// If the loader type is not specified, loader type is automatically determined from the
+    /// `architectures` array in the config.
+    </span><span class="kw">pub fn </span>build(<span class="self">self</span>, loader_tp: <span class="prelude-ty">Option</span>&lt;NormalLoaderType&gt;) -&gt; anyhow::Result&lt;Box&lt;<span class="kw">dyn </span>Loader&gt;&gt; {
+        <span class="kw">let </span>loader: Box&lt;<span class="kw">dyn </span>NormalModelLoader&gt; = <span class="kw">match </span>loader_tp {
+            <span class="prelude-val">Some</span>(NormalLoaderType::Mistral) =&gt; Box::new(MistralLoader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Gemma) =&gt; Box::new(GemmaLoader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Llama) =&gt; Box::new(LlamaLoader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Mixtral) =&gt; Box::new(MixtralLoader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Phi2) =&gt; Box::new(Phi2Loader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Phi3) =&gt; Box::new(Phi3Loader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Qwen2) =&gt; Box::new(Qwen2Loader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Gemma2) =&gt; Box::new(Gemma2Loader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Starcoder2) =&gt; Box::new(Starcoder2Loader),
+            <span class="prelude-val">Some</span>(NormalLoaderType::Phi3_5MoE) =&gt; Box::new(Phi3_5MoELoader),
+            <span class="prelude-val">None </span>=&gt; Box::new(AutoLoader),
         };
-        Box::new(NormalLoader {
+        <span class="prelude-val">Ok</span>(Box::new(NormalLoader {
             inner: loader,
             model_id: <span class="self">self</span>.model_id.unwrap(),
             config: <span class="self">self</span>.config,
@@ -808,7 +1116,10 @@
             chat_template: <span class="self">self</span>.chat_template,
             tokenizer_json: <span class="self">self</span>.tokenizer_json,
             tgt_non_granular_index: <span class="self">self</span>.tgt_non_granular_index,
-        })
+            token_source: RwLock::new(<span class="prelude-val">None</span>),
+            revision: RwLock::new(<span class="prelude-val">None</span>),
+            from_uqff: RwLock::new(<span class="prelude-val">None</span>),
+        }))
     }
 }
 
@@ -822,18 +1133,27 @@
         device: <span class="kw-2">&amp;</span>Device,
         silent: bool,
         mapper: DeviceMapMetadata,
-        in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+        in_situ_quant: <span class="prelude-ty">Option</span>&lt;IsqType&gt;,
         paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">let </span>paths: anyhow::Result&lt;Box&lt;<span class="kw">dyn </span>ModelPaths&gt;&gt; = <span class="macro">get_paths!</span>(
             LocalModelPaths,
             <span class="kw-2">&amp;</span>token_source,
-            revision,
+            revision.clone(),
             <span class="self">self</span>,
             <span class="prelude-val">None</span>,
             <span class="prelude-val">None</span>,
-            silent
+            silent,
+            <span class="self">self</span>.config.from_uqff.is_some()
         );
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(from_uqff) = <span class="self">self</span>.config.from_uqff.clone() {
+            <span class="kw-2">*</span><span class="self">self</span>.from_uqff.write().unwrap() = <span class="prelude-val">Some</span>(<span class="macro">get_uqff_paths!</span>(<span class="kw-2">&amp;</span>from_uqff, <span class="self">self</span>, silent));
+        }
+        <span class="kw-2">*</span><span class="self">self
+            </span>.token_source
+            .write()
+            .expect(<span class="string">"Failed to write to token source"</span>) = <span class="prelude-val">Some</span>(token_source);
+        <span class="kw-2">*</span><span class="self">self</span>.revision.write().expect(<span class="string">"Failed to write to revision"</span>) = revision;
         <span class="self">self</span>.load_model_from_path(
             <span class="kw-2">&amp;</span>paths<span class="question-mark">?</span>,
             dtype,
@@ -853,19 +1173,35 @@
         device: <span class="kw-2">&amp;</span>Device,
         silent: bool,
         mapper: DeviceMapMetadata,
-        in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
-        paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
+        in_situ_quant: <span class="prelude-ty">Option</span>&lt;IsqType&gt;,
+        <span class="kw-2">mut </span>paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">let </span>config = std::fs::read_to_string(paths.get_config_filename())<span class="question-mark">?</span>;
-        <span class="kw">let </span>dtype = dtype.try_into_dtype(device)<span class="question-mark">?</span>;
         <span class="comment">// Otherwise, the device mapper will print it
-        </span><span class="kw">if </span>mapper.is_dummy() {
+        </span><span class="kw">if </span>mapper.is_dummy()
+            &amp;&amp; (<span class="self">self</span>.config.topology.is_none()
+                || <span class="self">self
+                    </span>.config
+                    .topology
+                    .as_ref()
+                    .is_some_and(|t| t.is_dummy_device_map()))
+        {
             <span class="macro">info!</span>(
                 <span class="string">"Loading model `{}` on {}."</span>,
                 <span class="self">self</span>.get_id(),
                 device.device_pretty_repr()
             );
+        } <span class="kw">else if </span>paged_attn_config.is_some() {
+            <span class="macro">warn!</span>(<span class="string">"Device mapping or device topology and PagedAttention are incompatible, disabling PagedAttention."</span>);
+            paged_attn_config = <span class="prelude-val">None</span>;
         }
+
+        <span class="kw">let </span>mapper = mapper.into_mapper(
+            <span class="self">self</span>.inner.get_total_device_mapping_num_layers(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>,
+            device,
+            <span class="self">self</span>.config.topology.as_ref(),
+        )<span class="question-mark">?</span>;
+        <span class="kw">let </span>dtype = mapper.get_min_dtype(dtype)<span class="question-mark">?</span>;
 
         <span class="macro">info!</span>(
             <span class="string">"Model config: {:?}"</span>,
@@ -873,7 +1209,23 @@
                 .get_config_repr(<span class="kw-2">&amp;</span>config, <span class="self">self</span>.config.use_flash_attn)<span class="question-mark">?
         </span>);
 
-        <span class="kw">let </span>load_device = <span class="kw">if </span>in_situ_quant.is_none() {
+        <span class="kw">let </span><span class="kw-2">mut </span>loading_isq = in_situ_quant.is_some() || <span class="self">self</span>.config.from_uqff.is_some();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>topology) = <span class="self">self</span>.config.topology {
+            loading_isq |= topology
+                .<span class="number">0
+                </span>.iter()
+                .any(|layer| layer.as_ref().is_some_and(|layer| layer.isq.is_some()));
+        }
+
+        <span class="kw">if </span><span class="self">self</span>.config.imatrix.is_some() &amp;&amp; <span class="self">self</span>.config.calibration_file.is_some() {
+            <span class="macro">anyhow::bail!</span>(
+                <span class="string">"`imatrix` and `calibration_file` were both specified, this is not allowed."
+            </span>);
+        }
+
+        <span class="comment">// Load onto the regular device if not using isq or if the calibration file is specified
+        </span><span class="kw">let </span>load_device = <span class="kw">if </span>!loading_isq || <span class="self">self</span>.config.calibration_file.is_some() {
+            loading_isq = <span class="bool-val">false</span>;
             device.clone()
         } <span class="kw">else </span>{
             Device::Cpu
@@ -890,29 +1242,31 @@
         <span class="kw">let </span><span class="kw-2">mut </span>model = <span class="kw">match </span><span class="self">self</span>.kind {
             ModelKind::Normal =&gt; <span class="macro">normal_model_loader!</span>(
                 paths,
-                dtype,
+                <span class="prelude-val">Some</span>(dtype),
                 <span class="kw-2">&amp;</span>load_device,
                 config,
                 <span class="self">self</span>.inner,
                 <span class="self">self</span>.config.use_flash_attn,
                 silent,
                 mapper,
-                in_situ_quant.is_some(),
+                loading_isq,
+                <span class="self">self</span>.config.from_uqff.is_some(),
                 device.clone(),
-                attention_mechanism
+                attention_mechanism,
+                <span class="macro">matches!</span>(<span class="self">self</span>.config.organization, IsqOrganization::MoeExpertsOnly)
             ),
             ModelKind::Adapter {
                 adapter: AdapterKind::XLora,
             } =&gt; <span class="macro">xlora_model_loader!</span>(
                 paths,
-                dtype,
+                <span class="prelude-val">Some</span>(dtype),
                 <span class="kw-2">&amp;</span>load_device,
                 config,
                 <span class="self">self</span>.inner,
                 <span class="self">self</span>.config.use_flash_attn,
                 silent,
                 mapper,
-                in_situ_quant.is_some(),
+                loading_isq,
                 device.clone()
             ),
             ModelKind::Adapter {
@@ -926,7 +1280,7 @@
                 <span class="self">self</span>.config.use_flash_attn,
                 silent,
                 mapper,
-                in_situ_quant.is_some(),
+                loading_isq,
                 device.clone()
             ),
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
@@ -936,10 +1290,122 @@
         <span class="kw">let </span>gen_conf: <span class="prelude-ty">Option</span>&lt;GenerationConfig&gt; = paths
             .get_gen_conf_filename()
             .map(|f| serde_json::from_str(<span class="kw-2">&amp;</span>fs::read_to_string(f).unwrap()).unwrap());
-        <span class="kw">let </span>chat_template = get_chat_template(paths, <span class="kw-2">&amp;</span><span class="self">self</span>.chat_template, <span class="prelude-val">None</span>);
+        <span class="kw">let </span>chat_template = get_chat_template(
+            paths,
+            <span class="kw-2">&amp;</span>paths
+                .get_chat_template_json()
+                .as_ref()
+                .map(|x| x.to_string_lossy().to_string())
+                .clone(),
+            <span class="kw-2">&amp;</span><span class="self">self</span>.chat_template,
+            <span class="prelude-val">None</span>,
+        );
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(in_situ_quant) = in_situ_quant {
-            model.quantize(in_situ_quant, device.clone())<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(calibration_file) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.calibration_file {
+            <span class="kw">let </span>calibration_data = std::fs::read_to_string(calibration_file)<span class="question-mark">?</span>;
+            <span class="comment">// Tokenize, don't add bos yet
+            </span><span class="kw">let </span>tokens = tokenizer
+                .encode(calibration_data, <span class="bool-val">false</span>)
+                .map_err(anyhow::Error::msg)<span class="question-mark">?
+                </span>.get_ids()
+                .to_vec();
+            <span class="macro">info!</span>(
+                <span class="string">"Collecting imatrix from calibration file `{}` of {} tokens."</span>,
+                calibration_file.display(),
+                tokens.len()
+            );
+            <span class="kw">let </span>bos_toks = chat_template.bos_tok().map(|b| <span class="macro">vec!</span>[b]).unwrap_or_default();
+            <span class="kw">let </span>bos_tok_id = tokenizer
+                .token_to_id(<span class="kw-2">&amp;</span>bos_toks[<span class="number">0</span>])
+                .expect(<span class="string">"Somehow the bos token is not present."</span>);
+
+            <span class="kw">match </span><span class="self">self</span>.config.organization {
+                IsqOrganization::Default =&gt; model.begin_track_stats()<span class="question-mark">?</span>,
+                IsqOrganization::MoeExpertsOnly =&gt; model.begin_track_stats_moe_experts_only()<span class="question-mark">?</span>,
+            }
+
+            <span class="kw">const </span>CHUNK_SIZE: usize = <span class="number">1024</span>;
+            <span class="kw">let </span>n_chunks = tokens.len().div_ceil(CHUNK_SIZE);
+            <span class="kw">let </span>start = Instant::now();
+            <span class="kw">for </span>(i, chunk) <span class="kw">in </span>tokens.chunks(CHUNK_SIZE).enumerate() {
+                <span class="kw">let </span>chunk = [<span class="macro">vec!</span>[bos_tok_id], chunk.to_vec()].concat();
+                <span class="kw">let </span>chunk_len = chunk.len();
+
+                <span class="kw">let </span>start = Instant::now();
+                <span class="kw">let </span>inputs =
+                    make_prompt_chunk(<span class="number">0</span>, <span class="macro">vec!</span>[chunk], <span class="kw-2">&amp;</span>[<span class="number">0</span>], <span class="kw-2">&amp;</span>load_device, <span class="prelude-val">None</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+                <span class="kw">let _ </span>= model.forward(
+                    <span class="kw-2">&amp;</span>inputs.input,
+                    <span class="kw-2">&amp;</span>inputs.positions,
+                    inputs.positions_kernel,
+                    inputs.context_lens,
+                    inputs.position_ids,
+                    <span class="prelude-val">None</span>,
+                    <span class="kw-2">&amp;</span>inputs.flash_meta,
+                )<span class="question-mark">?</span>;
+                <span class="kw">match </span>model.cache_mut() {
+                    EitherCache::Full(full) =&gt; {
+                        <span class="kw">for </span>layer <span class="kw">in </span><span class="kw-2">&amp;mut *</span>full.lock() {
+                            <span class="kw-2">*</span>layer = <span class="prelude-val">None
+                        </span>}
+                    }
+                    EitherCache::Normal(normal) =&gt; {
+                        <span class="kw">for </span>layer <span class="kw">in </span><span class="kw-2">&amp;mut *</span>normal.lock().unwrap().<span class="number">0 </span>{
+                            layer.set_len(<span class="number">0</span>);
+                        }
+                    }
+                }
+                <span class="kw">let </span>end = Instant::now();
+                <span class="macro">info!</span>(
+                    <span class="string">"Processed chunk {}/{n_chunks} ({chunk_len} tokens), {:.2}s"</span>,
+                    i + <span class="number">1</span>,
+                    end.duration_since(start).as_secs_f32()
+                );
+            }
+            load_device.synchronize()<span class="question-mark">?</span>;
+            <span class="kw">let </span>end = Instant::now();
+            <span class="macro">info!</span>(
+                <span class="string">"Finished collecting imatrix in {:.2}s"</span>,
+                end.duration_since(start).as_secs_f32()
+            );
+        }
+
+        <span class="kw">if </span>(in_situ_quant.is_some() || <span class="self">self</span>.config.topology.is_some())
+            &amp;&amp; <span class="self">self</span>.config.from_uqff.is_none()
+        {
+            <span class="kw">let </span>imatrix_source = <span class="kw">match </span>(
+                <span class="self">self</span>.config.imatrix.as_ref(),
+                <span class="self">self</span>.config.calibration_file.is_some(),
+            ) {
+                (<span class="prelude-val">None</span>, <span class="bool-val">false</span>) =&gt; <span class="prelude-val">None</span>,
+                (<span class="prelude-val">Some</span>(file), <span class="bool-val">false</span>) =&gt; <span class="prelude-val">Some</span>(ImatrixDataSource::File(file)),
+                (<span class="prelude-val">None</span>, <span class="bool-val">true</span>) =&gt; <span class="prelude-val">Some</span>(ImatrixDataSource::Collected),
+                (<span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="bool-val">true</span>) =&gt; <span class="macro">unreachable!</span>(),
+            };
+            model.quantize(
+                in_situ_quant,
+                device.clone(),
+                <span class="self">self</span>.config.topology.as_ref(),
+                silent,
+                imatrix_source,
+                <span class="self">self</span>.config.organization,
+                <span class="self">self</span>.config.write_uqff.as_ref(),
+                UqffFullSer {
+                    tokenizer: <span class="kw-2">&amp;</span>tokenizer,
+                    template_filename: paths.get_template_filename(),
+                    generation_config: paths.get_gen_conf_filename(),
+                    config: config.clone(),
+                    processor_filename: <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                    preprocessor_filename: <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                },
+            )<span class="question-mark">?</span>;
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(from_uqff) = <span class="kw-2">&amp;*</span><span class="self">self</span>.from_uqff.read().unwrap() {
+            model.load_from_artifacts(
+                device.clone(),
+                <span class="self">self</span>.config.topology.as_ref(),
+                silent,
+                from_uqff,
+            )<span class="question-mark">?</span>;
         }
 
         <span class="kw">let </span>paged_attn_config = <span class="kw">if </span><span class="macro">matches!</span>(<span class="self">self</span>.kind, ModelKind::Adapter { .. }) {
@@ -965,10 +1431,14 @@
         };
 
         <span class="kw">let </span>max_seq_len = model.max_seq_len();
-        <span class="kw">let </span>tok_trie: Arc&lt;TokTrie&gt; = build_tok_trie(tokenizer.clone()).into();
-        <span class="kw">let </span>num_hidden_layers = model.cache().lock().len();
+        <span class="kw">let </span>tok_env = build_tok_env(tokenizer.clone());
+        <span class="kw">let </span>num_hidden_layers = <span class="kw">match </span>model.cache() {
+            EitherCache::Full(full) =&gt; full.lock().len(),
+            EitherCache::Normal(normal) =&gt; normal.lock().unwrap().<span class="number">0</span>.len(),
+        };
         <span class="kw">let </span>eos = calculate_eos_tokens(<span class="kw-2">&amp;</span>chat_template, gen_conf, <span class="kw-2">&amp;</span>tokenizer);
         <span class="kw">let </span>sliding_window = model.config().sliding_window;
+        <span class="kw">let </span>model_metadata = Arc::new(model.config().clone());
         <span class="prelude-val">Ok</span>(Arc::new(Mutex::new(NormalPipeline {
             model,
             tokenizer: tokenizer.into(),
@@ -983,8 +1453,7 @@
             model_id: <span class="self">self</span>.model_id.clone(),
             metadata: Arc::new(GeneralMetadata {
                 max_seq_len,
-                repeat_last_n: <span class="self">self</span>.config.repeat_last_n,
-                tok_trie,
+                tok_env: <span class="prelude-val">Some</span>(tok_env),
                 has_no_kv_cache: <span class="self">self</span>.no_kv_cache,
                 num_hidden_layers,
                 eos_tok: eos,
@@ -994,7 +1463,16 @@
                 sliding_window,
                 cache_config,
                 cache_engine,
+                prompt_batchsize: <span class="self">self</span>.config.prompt_batchsize,
+                model_metadata: <span class="prelude-val">Some</span>(model_metadata),
             }),
+            topology: <span class="self">self</span>.config.topology.clone(),
+            silent,
+            organization: <span class="self">self</span>.config.organization,
+            template_filename: paths.get_template_filename().clone(),
+            generation_config: paths.get_gen_conf_filename().cloned(),
+            config,
+            imatrix: <span class="self">self</span>.config.imatrix.clone(),
         })))
     }
 
@@ -1011,8 +1489,8 @@
 }
 
 <span class="kw">impl </span>PreProcessingMixin <span class="kw">for </span>NormalPipeline {
-    <span class="kw">fn </span>get_chat_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;ChatTemplate&gt; {
-        <span class="self">self</span>.chat_template.clone()
+    <span class="kw">fn </span>get_chat_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;ChatTemplate&gt;&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.chat_template.clone())
     }
     <span class="kw">fn </span>get_input_processor_config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>Any&gt;&gt; {
         <span class="prelude-val">None
@@ -1020,28 +1498,67 @@
 }
 
 <span class="kw">impl </span>IsqPipelineMixin <span class="kw">for </span>NormalPipeline {
-    <span class="kw">fn </span>re_isq_model(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dtype: GgmlDType) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">fn </span>re_isq_model(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dtype: IsqType) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>device = <span class="self">self</span>.device().clone();
         <span class="self">self</span>.model
-            .quantize(dtype, device)
+            .quantize(
+                <span class="prelude-val">Some</span>(dtype),
+                device,
+                <span class="self">self</span>.topology.as_ref(),
+                <span class="self">self</span>.silent,
+                <span class="self">self</span>.imatrix.as_ref().map(ImatrixDataSource::File),
+                <span class="self">self</span>.organization,
+                <span class="prelude-val">None</span>,
+                UqffFullSer {
+                    tokenizer: <span class="kw-2">&amp;</span><span class="self">self</span>.tokenizer,
+                    template_filename: <span class="kw-2">&amp;</span><span class="self">self</span>.template_filename,
+                    generation_config: <span class="self">self</span>.generation_config.as_ref(),
+                    config: <span class="self">self</span>.config.clone(),
+                    processor_filename: <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                    preprocessor_filename: <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                },
+            )
             .map_err(anyhow::Error::msg)
     }
 }
 
 <span class="kw">impl </span>CacheManagerMixin <span class="kw">for </span>NormalPipeline {
     <span class="kw">fn </span>clone_in_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
-        DefaultCacheManager.clone_in_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        <span class="kw">if </span><span class="macro">matches!</span>(<span class="self">self</span>.model.cache(), EitherCache::Full(<span class="kw">_</span>)) {
+            FullCacheManager.clone_in_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        } <span class="kw">else </span>{
+            NormalCacheManager.clone_in_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        }
     }
     <span class="kw">fn </span>clone_out_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
-        DefaultCacheManager.clone_out_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        <span class="kw">if </span><span class="macro">matches!</span>(<span class="self">self</span>.model.cache(), EitherCache::Full(<span class="kw">_</span>)) {
+            FullCacheManager.clone_out_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        } <span class="kw">else </span>{
+            NormalCacheManager.clone_out_cache(<span class="self">self</span>, seqs, modify_draft_cache)
+        }
     }
-    <span class="kw">fn </span>set_none_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, reset_non_granular: bool, modify_draft_cache: bool) {
-        DefaultCacheManager.set_none_cache(<span class="self">self</span>, modify_draft_cache);
+    <span class="kw">fn </span>set_none_cache(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
+        reset_non_granular: bool,
+        modify_draft_cache: bool,
+        load_preallocated_cache: bool,
+    ) {
+        <span class="kw">if </span><span class="macro">matches!</span>(<span class="self">self</span>.model.cache(), EitherCache::Full(<span class="kw">_</span>)) {
+            FullCacheManager.set_none_cache(<span class="self">self</span>, seqs, modify_draft_cache, <span class="bool-val">false</span>);
+        } <span class="kw">else </span>{
+            NormalCacheManager.set_none_cache(
+                <span class="self">self</span>,
+                seqs,
+                modify_draft_cache,
+                load_preallocated_cache,
+            );
+        }
         <span class="kw">if </span>reset_non_granular {
             <span class="self">self</span>.reset_non_granular_state()
         }
     }
-    <span class="kw">fn </span>cache(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Cache {
+    <span class="kw">fn </span>cache(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>EitherCache {
         <span class="self">self</span>.model.cache()
     }
 }
@@ -1058,15 +1575,15 @@
     <span class="kw">fn </span>device(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Device {
         <span class="self">self</span>.model.device().clone()
     }
-    <span class="kw">fn </span>tokenizer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;Tokenizer&gt; {
-        <span class="self">self</span>.tokenizer.clone()
+    <span class="kw">fn </span>tokenizer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;Tokenizer&gt;&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.tokenizer.clone())
     }
     <span class="kw">fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="self">self</span>.model_id.clone()
     }
     <span class="kw">fn </span>reset_non_granular_state(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(s) = <span class="self">self</span>.non_granular_state.as_ref() {
-            <span class="kw-2">*</span><span class="self">self</span>.cache().get_scalings_cache() = <span class="prelude-val">None</span>;
+            <span class="kw-2">*</span><span class="self">self</span>.cache().full().get_scalings_cache() = <span class="prelude-val">None</span>;
             <span class="kw-2">*</span><span class="macro">get_mut_arcmutex!</span>(s.non_granular_index) = <span class="number">0</span>;
         }
     }
@@ -1077,7 +1594,11 @@
 
 <span class="attr">#[async_trait::async_trait]
 </span><span class="kw">impl </span>Pipeline <span class="kw">for </span>NormalPipeline {
-    <span class="kw">fn </span>forward_inputs(<span class="kw-2">&amp;</span><span class="self">self</span>, inputs: Box&lt;<span class="kw">dyn </span>Any&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor, candle_core::Error&gt; {
+    <span class="kw">fn </span>forward_inputs(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        inputs: Box&lt;<span class="kw">dyn </span>Any&gt;,
+        return_raw_logits: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;ForwardInputsResult, candle_core::Error&gt; {
         <span class="kw">let </span>ModelInputs {
             input_ids,
             input_ids_full,
@@ -1088,21 +1609,34 @@
             context_lens,
             position_ids,
             <span class="kw-2">mut </span>paged_attn_meta,
+            flash_meta,
+            flash_meta_full,
         } = <span class="kw-2">*</span>inputs.downcast().expect(<span class="string">"Downcast failed."</span>);
-        <span class="kw">match </span><span class="self">self</span>.model.is_xlora() {
+        <span class="kw">let </span>paged_attn_meta = <span class="kw">match </span>(
+            <span class="self">self</span>.get_metadata().cache_engine.as_ref(),
+            <span class="kw-2">&amp;mut </span>paged_attn_meta,
+        ) {
+            (<span class="prelude-val">Some</span>(engine), <span class="prelude-val">Some</span>(meta)) =&gt; <span class="prelude-val">Some</span>((engine.get_kv_cache().clone(), meta)),
+            (<span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="prelude-val">None</span>) =&gt; {
+                <span class="comment">// This can happen if Rust-side user code is wrong
+                </span><span class="macro">candle_core::bail!</span>(<span class="string">"Forward step expected a PagedAttention input metadata. This was not provided, please ensure that the scheduler config is correctly configured for PagedAttention."</span>)
+            }
+            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt; {
+                <span class="comment">// This should never happen but we handle it anyway
+                </span><span class="macro">candle_core::bail!</span>(<span class="string">"Forward step got a PagedAttention input metadata but there is no cache engine. Please raise an issue."</span>)
+            }
+            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">None</span>,
+        };
+        <span class="kw">let </span>logits = <span class="kw">match </span><span class="self">self</span>.model.is_xlora() {
             <span class="bool-val">false </span>=&gt; <span class="self">self</span>.model.forward(
                 <span class="kw-2">&amp;</span>input_ids,
                 <span class="kw-2">&amp;</span>seqlen_offsets,
                 seqlen_offsets_kernel,
                 context_lens,
                 position_ids,
-                <span class="self">self</span>.get_metadata().cache_engine.as_ref().map(|engine| {
-                    (
-                        engine.get_kv_cache().clone(),
-                        paged_attn_meta.as_mut().unwrap(),
-                    )
-                }),
-            ),
+                paged_attn_meta,
+                <span class="kw-2">&amp;</span>flash_meta,
+            )<span class="question-mark">?</span>,
             <span class="bool-val">true </span>=&gt; <span class="self">self</span>.model.xlora_forward(
                 <span class="kw-2">&amp;</span>input_ids,
                 input_ids_full.as_ref().unwrap_or(<span class="kw-2">&amp;</span>input_ids),
@@ -1114,13 +1648,20 @@
                 <span class="kw-2">&amp;</span><span class="self">self</span>.non_granular_state,
                 context_lens,
                 position_ids,
-            ),
+                <span class="kw-2">&amp;</span>flash_meta,
+                flash_meta_full.as_ref().unwrap_or(<span class="kw-2">&amp;</span>flash_meta),
+            )<span class="question-mark">?</span>,
+        };
+        <span class="kw">if </span>return_raw_logits {
+            <span class="prelude-val">Ok</span>(ForwardInputsResult::RawLogits { logits })
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(ForwardInputsResult::CausalGeneration { logits })
         }
     }
-    <span class="kw">async fn </span>sample(
+    <span class="kw">async fn </span>sample_causal_gen(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
-        logits: Tensor,
+        logits: Vec&lt;Tensor&gt;,
         prefix_cacher: <span class="kw-2">&amp;mut </span>PrefixCacheManager,
         disable_eos_stop: bool,
         rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
@@ -1162,16 +1703,16 @@
     ) -&gt; candle_core::Result&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>vbs = Vec::new();
         <span class="comment">// Precompile regex here
-        </span><span class="kw">let </span>regex = Regex::new(match_regex).map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
+        </span><span class="kw">let </span>regex = Regex::new(match_regex).map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
         <span class="kw">for </span>model_id <span class="kw">in </span>model_ids {
             <span class="kw">let </span>model_id_str = <span class="kw-2">&amp;</span>model_id;
             <span class="kw">let </span>model_id = Path::new(<span class="kw-2">&amp;</span>model_id);
 
             <span class="kw">let </span>api = ApiBuilder::new()
                 .with_progress(!silent)
-                .with_token(get_token(token).map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>)
+                .with_token(get_token(token).map_err(candle_core::Error::msg)<span class="question-mark">?</span>)
                 .build()
-                .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
+                .map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
             <span class="kw">let </span>revision = revision.clone().unwrap_or(<span class="string">"main"</span>.to_string());
             <span class="kw">let </span>api = api.repo(Repo::with_revision(
                 model_id_str.clone(),
@@ -1187,20 +1728,28 @@
             <span class="kw">let </span>regex = regex.clone();
             <span class="kw">let </span>match_regex_clone = match_regex.to_string();
             <span class="kw">let </span>layers_clone = layers.clone();
-            <span class="kw">let </span>vb = from_mmaped_safetensors(filenames, <span class="macro">vec!</span>[], dtype, dev, silent, <span class="kw">move </span>|key| {
-                <span class="kw">if </span>regex.is_match(<span class="kw-2">&amp;</span>key) {
-                    <span class="comment">// Idx of the last char of the layer id, +1
-                    // Assumes N.MLP
-                    </span><span class="kw">let </span>last_layer_idx = key.find(<span class="kw-2">&amp;</span>match_regex_clone).unwrap() - <span class="number">1</span>;
-                    <span class="kw">let </span>first_layer_idx = key[..last_layer_idx].rfind(<span class="string">'.'</span>).unwrap();
-                    <span class="kw">let </span>layer_n = key[first_layer_idx + <span class="number">1</span>..last_layer_idx]
-                        .parse::&lt;usize&gt;()
-                        .unwrap();
-                    layers_clone.contains(<span class="kw-2">&amp;</span>layer_n) || layers_clone.is_empty()
-                } <span class="kw">else </span>{
-                    <span class="bool-val">false
-                </span>}
-            })<span class="question-mark">?</span>;
+            <span class="kw">let </span>vb = from_mmaped_safetensors(
+                filenames,
+                <span class="macro">vec!</span>[],
+                <span class="prelude-val">Some</span>(dtype),
+                dev,
+                silent,
+                <span class="prelude-val">None</span>,
+                <span class="kw">move </span>|key| {
+                    <span class="kw">if </span>regex.is_match(<span class="kw-2">&amp;</span>key) {
+                        <span class="comment">// Idx of the last char of the layer id, +1
+                        // Assumes N.MLP
+                        </span><span class="kw">let </span>last_layer_idx = key.find(<span class="kw-2">&amp;</span>match_regex_clone).unwrap() - <span class="number">1</span>;
+                        <span class="kw">let </span>first_layer_idx = key[..last_layer_idx].rfind(<span class="string">'.'</span>).unwrap();
+                        <span class="kw">let </span>layer_n = key[first_layer_idx + <span class="number">1</span>..last_layer_idx]
+                            .parse::&lt;usize&gt;()
+                            .unwrap();
+                        layers_clone.contains(<span class="kw-2">&amp;</span>layer_n) || layers_clone.is_empty()
+                    } <span class="kw">else </span>{
+                        <span class="bool-val">false
+                    </span>}
+                },
+            )<span class="question-mark">?</span>;
             vbs.push(vb);
         }
 
@@ -1210,9 +1759,9 @@
 
             <span class="kw">let </span>api = ApiBuilder::new()
                 .with_progress(!silent)
-                .with_token(get_token(token).map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>)
+                .with_token(get_token(token).map_err(candle_core::Error::msg)<span class="question-mark">?</span>)
                 .build()
-                .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
+                .map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
             <span class="kw">let </span>revision = revision.clone().unwrap_or(<span class="string">"main"</span>.to_string());
             <span class="kw">let </span>api = api.repo(Repo::with_revision(
                 model_id_str.clone(),
@@ -1233,9 +1782,10 @@
             <span class="kw">let </span>vb = from_mmaped_safetensors(
                 gate_filenames.clone(),
                 <span class="macro">vec!</span>[],
-                dtype,
+                <span class="prelude-val">Some</span>(dtype),
                 dev,
                 silent,
+                <span class="prelude-val">None</span>,
                 |<span class="kw">_</span>| <span class="bool-val">true</span>,
             )<span class="question-mark">?</span>;
             <span class="macro">info!</span>(

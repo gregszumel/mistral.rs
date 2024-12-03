@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/ops.rs`."><title>ops.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/ops.rs`."><title>ops.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/</div>ops.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -724,9 +725,173 @@
 <a href="#724" id="724">724</a>
 <a href="#725" id="725">725</a>
 <a href="#726" id="726">726</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>candle_core::{
-    backend::BackendStorage, CpuStorage, CustomOp1, CustomOp2, DType, Error, Layout, <span class="prelude-ty">Result</span>, Shape,
-    Tensor, WithDType, D,
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a></pre></div><pre class="rust"><code><span class="kw">use </span>candle_core::{
+    backend::BackendStorage, shape::Dim, CpuStorage, CustomOp1, CustomOp2, DType, Error, Layout,
+    <span class="prelude-ty">Result</span>, Shape, Tensor, WithDType, D,
 };
 
 <span class="kw">use </span>std::{
@@ -833,10 +998,23 @@
                 <span class="kw">let </span>result = CpuStorage::I64(result);
                 <span class="prelude-val">Ok</span>((result, l1.shape().clone()))
             }
+            CpuStorage::I16(vs1) =&gt; {
+                <span class="kw">let </span>vs2 = s2.as_slice::&lt;i16&gt;().unwrap();
+                <span class="kw">let </span>result = <span class="self">self</span>.bitwise(vs1, vs2);
+                <span class="kw">let </span>result = CpuStorage::I16(result);
+                <span class="prelude-val">Ok</span>((result, l1.shape().clone()))
+            }
+            CpuStorage::I32(vs1) =&gt; {
+                <span class="kw">let </span>vs2 = s2.as_slice::&lt;i32&gt;().unwrap();
+                <span class="kw">let </span>result = <span class="self">self</span>.bitwise(vs1, vs2);
+                <span class="kw">let </span>result = CpuStorage::I32(result);
+                <span class="prelude-val">Ok</span>((result, l1.shape().clone()))
+            }
             CpuStorage::BF16(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::BF16, <span class="string">"bitwise"</span>)),
             CpuStorage::F16(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F16, <span class="string">"bitwise"</span>)),
             CpuStorage::F32(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F32, <span class="string">"bitwise"</span>)),
             CpuStorage::F64(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F64, <span class="string">"bitwise"</span>)),
+            CpuStorage::F8E4M3(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F8E4M3, <span class="string">"bitwise"</span>)),
         }
     }
     <span class="attr">#[cfg(feature = <span class="string">"cuda"</span>)]
@@ -881,6 +1059,18 @@
                 <span class="kw">let </span>elem_count = l1.shape().elem_count();
                 (d_in1_ptr, d_in2_ptr, elem_count)
             }
+            DType::I32 =&gt; {
+                <span class="kw">let </span>d_in1_ptr = <span class="kw-2">*</span>s1.as_cuda_slice::&lt;i32&gt;()<span class="question-mark">?</span>.device_ptr() <span class="kw">as </span><span class="kw-2">*const </span>c_void;
+                <span class="kw">let </span>d_in2_ptr = <span class="kw-2">*</span>s2.as_cuda_slice::&lt;i32&gt;()<span class="question-mark">?</span>.device_ptr() <span class="kw">as </span><span class="kw-2">*const </span>c_void;
+                <span class="kw">let </span>elem_count = l1.shape().elem_count();
+                (d_in1_ptr, d_in2_ptr, elem_count)
+            }
+            DType::I16 =&gt; {
+                <span class="kw">let </span>d_in1_ptr = <span class="kw-2">*</span>s1.as_cuda_slice::&lt;i16&gt;()<span class="question-mark">?</span>.device_ptr() <span class="kw">as </span><span class="kw-2">*const </span>c_void;
+                <span class="kw">let </span>d_in2_ptr = <span class="kw-2">*</span>s2.as_cuda_slice::&lt;i16&gt;()<span class="question-mark">?</span>.device_ptr() <span class="kw">as </span><span class="kw-2">*const </span>c_void;
+                <span class="kw">let </span>elem_count = l1.shape().elem_count();
+                (d_in1_ptr, d_in2_ptr, elem_count)
+            }
             DType::BF16 =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::BF16, <span class="string">"bitwise"</span>));
             }
@@ -892,6 +1082,9 @@
             }
             DType::F64 =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F64, <span class="string">"bitwise"</span>));
+            }
+            DType::F8E4M3 =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnsupportedDTypeForOp(DType::F8E4M3, <span class="string">"bitwise"</span>));
             }
         };
         <span class="kw">let </span>dst = <span class="kw">match </span>s1.dtype() {
@@ -967,6 +1160,33 @@
                             u32::try_from(elem_count)<span class="question-mark">?</span>,
                         ),
                         BitWiseOpEnum::Xor =&gt; ffi::bitwise_xor_i64(
+                            d_in1_ptr,
+                            d_in2_ptr,
+                            d_out_ptr,
+                            u32::try_from(elem_count)<span class="question-mark">?</span>,
+                        ),
+                    }
+                };
+                CudaStorage::wrap_cuda_slice(d_out, dev)
+            }
+            DType::I32 =&gt; {
+                <span class="kw">let </span>d_out = <span class="kw">unsafe </span>{ dev.alloc::&lt;i32&gt;(elem_count) }.w()<span class="question-mark">?</span>;
+                <span class="kw">let </span>d_out_ptr = <span class="kw-2">*</span>d_out.device_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+                <span class="kw">unsafe </span>{
+                    <span class="kw">match </span><span class="self">self</span>.op {
+                        BitWiseOpEnum::And =&gt; ffi::bitwise_and_i32(
+                            d_in1_ptr,
+                            d_in2_ptr,
+                            d_out_ptr,
+                            u32::try_from(elem_count)<span class="question-mark">?</span>,
+                        ),
+                        BitWiseOpEnum::Or =&gt; ffi::bitwise_or_i32(
+                            d_in1_ptr,
+                            d_in2_ptr,
+                            d_out_ptr,
+                            u32::try_from(elem_count)<span class="question-mark">?</span>,
+                        ),
+                        BitWiseOpEnum::Xor =&gt; ffi::bitwise_xor_i32(
                             d_in1_ptr,
                             d_in2_ptr,
                             d_out_ptr,
@@ -1066,10 +1286,13 @@
             candle_core::DType::U8 =&gt; ffi::count_nonzero_u8(d_in, n),
             candle_core::DType::U32 =&gt; ffi::count_nonzero_u32(d_in, n),
             candle_core::DType::I64 =&gt; ffi::count_nonzero_i64(d_in, n),
+            candle_core::DType::I16 =&gt; ffi::count_nonzero_i16(d_in, n),
+            candle_core::DType::I32 =&gt; ffi::count_nonzero_i32(d_in, n),
             candle_core::DType::BF16 =&gt; ffi::count_nonzero_bf16(d_in, n),
             candle_core::DType::F16 =&gt; ffi::count_nonzero_f16(d_in, n),
             candle_core::DType::F32 =&gt; ffi::count_nonzero_f32(d_in, n),
             candle_core::DType::F64 =&gt; ffi::count_nonzero_f64(d_in, n),
+            candle_core::DType::F8E4M3 =&gt; <span class="macro">todo!</span>(),
         }
     }
 }
@@ -1093,6 +1316,12 @@
             candle_core::DType::I64 =&gt; {
                 ffi::nonzero_i64(d_in, n, num_nonzero, dims, num_dims, d_out)
             }
+            candle_core::DType::I32 =&gt; {
+                ffi::nonzero_i64(d_in, n, num_nonzero, dims, num_dims, d_out)
+            }
+            candle_core::DType::I16 =&gt; {
+                ffi::nonzero_i16(d_in, n, num_nonzero, dims, num_dims, d_out)
+            }
             candle_core::DType::BF16 =&gt; {
                 ffi::nonzero_bf16(d_in, n, num_nonzero, dims, num_dims, d_out)
             }
@@ -1105,6 +1334,7 @@
             candle_core::DType::F64 =&gt; {
                 ffi::nonzero_f64(d_in, n, num_nonzero, dims, num_dims, d_out)
             }
+            candle_core::DType::F8E4M3 =&gt; <span class="macro">todo!</span>(),
         }
     }
 }
@@ -1121,11 +1351,14 @@
         <span class="kw">let </span>result = <span class="kw">match </span>storage {
             candle_core::CpuStorage::U8(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::U32(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
+            candle_core::CpuStorage::I16(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
+            candle_core::CpuStorage::I32(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::I64(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::BF16(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::F16(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::F32(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
             candle_core::CpuStorage::F64(vs) =&gt; <span class="self">self</span>.nonzero(vs, layout),
+            candle_core::CpuStorage::F8E4M3(_vs) =&gt; <span class="macro">todo!</span>(),
         };
         <span class="kw">let </span>index_len = layout.dims().len();
         <span class="kw">let </span>result_len = result.len() / index_len;
@@ -1146,11 +1379,14 @@
         <span class="kw">let </span>d_in = <span class="kw">match </span>storage.dtype() {
             candle_core::DType::U8 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;u8&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::U32 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;u32&gt;()<span class="question-mark">?</span>.device_ptr(),
+            candle_core::DType::I32 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;i32&gt;()<span class="question-mark">?</span>.device_ptr(),
+            candle_core::DType::I16 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;i16&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::I64 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;i64&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::BF16 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;bf16&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::F16 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;f16&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::F32 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;f32&gt;()<span class="question-mark">?</span>.device_ptr(),
             candle_core::DType::F64 =&gt; <span class="kw-2">*</span>storage.as_cuda_slice::&lt;f64&gt;()<span class="question-mark">?</span>.device_ptr(),
+            candle_core::DType::F8E4M3 =&gt; <span class="macro">todo!</span>(),
         } <span class="kw">as </span><span class="kw-2">*const </span>c_void;
         <span class="kw">let </span>n = layout.shape().elem_count();
         <span class="kw">let </span>num_nonzero = count_nonzero_cuda(storage.dtype(), d_in, u32::try_from(n)<span class="question-mark">?</span>);
@@ -1226,6 +1462,62 @@
             values: <span class="self">self</span>.gather(<span class="kw-2">&amp;</span>topk_indices, D::Minus1)<span class="question-mark">?</span>,
             indices: topk_indices,
         })
+    }
+}
+
+<span class="kw">pub trait </span>RepeatInterleaveOp {
+    <span class="kw">fn </span>repeat_interleave(<span class="kw-2">&amp;</span><span class="self">self</span>, repeats: usize, dim: usize) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt;;
+    <span class="kw">fn </span>repeat_interleave_flat(<span class="kw-2">&amp;</span><span class="self">self</span>, repeats: Vec&lt;u32&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt;;
+}
+
+<span class="kw">impl </span>RepeatInterleaveOp <span class="kw">for </span>Tensor {
+    <span class="kw">fn </span>repeat_interleave(<span class="kw-2">&amp;</span><span class="self">self</span>, repeats: usize, dim: usize) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="comment">// For metal
+        </span><span class="macro">assert!</span>(<span class="self">self</span>.dtype().is_float());
+        <span class="attr">#[allow(clippy::cast_possible_truncation)]
+        </span><span class="kw">let </span>indices = Tensor::new(
+            (<span class="number">0</span>..<span class="self">self</span>.dim(dim)<span class="question-mark">?</span>)
+                .flat_map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u32; repeats])
+                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+            <span class="self">self</span>.device(),
+        )<span class="question-mark">?</span>;
+        <span class="self">self</span>.index_select(<span class="kw-2">&amp;</span>indices, dim)
+    }
+
+    <span class="kw">fn </span>repeat_interleave_flat(<span class="kw-2">&amp;</span><span class="self">self</span>, repeats: Vec&lt;u32&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">let </span>xs = <span class="self">self</span>.flatten_all()<span class="question-mark">?</span>;
+        <span class="kw">if </span>repeats.len() != xs.dim(<span class="number">0</span>)<span class="question-mark">? </span>{
+            <span class="macro">candle_core::bail!</span>(
+                <span class="string">"repeats ({}) must match flattened self length ({})"</span>,
+                repeats.len(),
+                xs.dim(<span class="number">0</span>)<span class="question-mark">?
+            </span>);
+        }
+        <span class="attr">#[allow(clippy::cast_possible_truncation)]
+        </span><span class="kw">let </span>indices = Tensor::new(
+            (<span class="number">0</span>..xs.dim(<span class="number">0</span>)<span class="question-mark">?</span>)
+                .flat_map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u32; repeats[i] <span class="kw">as </span>usize])
+                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+            xs.device(),
+        )<span class="question-mark">?</span>;
+        xs.index_select(<span class="kw-2">&amp;</span>indices, <span class="number">0</span>)
+    }
+}
+
+<span class="kw">pub trait </span>SplitOp {
+    <span class="kw">fn </span>split&lt;D: Dim&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, splits: <span class="kw-2">&amp;</span>[usize], dim: D) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Tensor&gt;&gt;;
+}
+
+<span class="kw">impl </span>SplitOp <span class="kw">for </span>Tensor {
+    <span class="kw">fn </span>split&lt;D: Dim&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, splits: <span class="kw-2">&amp;</span>[usize], dim: D) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Tensor&gt;&gt; {
+        <span class="kw">let </span>dim = dim.to_index(<span class="self">self</span>.shape(), <span class="string">"split"</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>split_res = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>index = <span class="number">0</span>;
+        <span class="kw">for </span>split <span class="kw">in </span>splits {
+            split_res.push(<span class="self">self</span>.narrow(dim, index, <span class="kw-2">*</span>split)<span class="question-mark">?</span>);
+            index += <span class="kw-2">*</span>split;
+        }
+        <span class="prelude-val">Ok</span>(split_res)
     }
 }
 
@@ -1448,6 +1740,44 @@
                 [<span class="number">1</span>, <span class="number">6</span>]
             ]
         );
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_repeat_interleave() -&gt; candle_core::Result&lt;()&gt; {
+        <span class="kw">use </span><span class="kw">crate</span>::ops::RepeatInterleaveOp;
+        <span class="kw">use </span>candle_core::{Device, Tensor};
+
+        <span class="kw">let </span>input = Tensor::new(
+            <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="number">1f32</span>, <span class="number">2.</span>, <span class="number">3.</span>], <span class="macro">vec!</span>[<span class="number">4f32</span>, <span class="number">5.</span>, <span class="number">6.</span>]]],
+            <span class="kw-2">&amp;</span>Device::Cpu,
+        )<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>repeat_interleaved = input.repeat_interleave(<span class="number">2</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(
+            repeat_interleaved.to_vec3::&lt;f32&gt;()<span class="question-mark">?</span>,
+            <span class="macro">vec!</span>[<span class="macro">vec!</span>[
+                <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">3.</span>],
+                <span class="macro">vec!</span>[<span class="number">4.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">5.</span>, <span class="number">6.</span>, <span class="number">6.</span>]
+            ]]
+        );
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_repeat_interleave_flat() -&gt; candle_core::Result&lt;()&gt; {
+        <span class="kw">use </span><span class="kw">crate</span>::ops::RepeatInterleaveOp;
+        <span class="kw">use </span>candle_core::{Device, Tensor};
+
+        <span class="kw">let </span>input = Tensor::new(<span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>], <span class="kw-2">&amp;</span>Device::Cpu)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>repeat_interleaved = input.repeat_interleave_flat(<span class="macro">vec!</span>[<span class="number">1u32</span>, <span class="number">2u32</span>, <span class="number">3u32</span>, <span class="number">4u32</span>])<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(
+            repeat_interleaved.to_vec1::&lt;f64&gt;()<span class="question-mark">?</span>,
+            <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">3.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">4.</span>, <span class="number">4.</span>, <span class="number">4.</span>]
+        );
+
+        <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div></section></main></body></html>

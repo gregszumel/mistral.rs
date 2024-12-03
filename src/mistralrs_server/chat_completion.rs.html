@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-server/src/chat_completion.rs`."><title>chat_completion.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-server/src/chat_completion.rs`."><title>chat_completion.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_server/</div>chat_completion.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -405,13 +406,25 @@
 <a href="#405" id="405">405</a>
 <a href="#406" id="406">406</a>
 <a href="#407" id="407">407</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>base64::{engine::general_purpose, Engine};
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a></pre></div><pre class="rust"><code><span class="kw">use </span>serde_json::Value;
 <span class="kw">use </span>std::{
     collections::HashMap,
     env,
     error::Error,
-    fs::{<span class="self">self</span>, File},
-    io::Read,
     ops::Deref,
     pin::Pin,
     sync::Arc,
@@ -420,8 +433,11 @@
 };
 <span class="kw">use </span>tokio::sync::mpsc::{channel, Receiver, Sender};
 
-<span class="kw">use </span><span class="kw">crate</span>::openai::{ChatCompletionRequest, Grammar, MessageInnerContent, StopTokens};
-<span class="kw">use </span>anyhow::Result;
+<span class="kw">use crate</span>::{
+    openai::{ChatCompletionRequest, Grammar, MessageInnerContent, StopTokens},
+    util,
+};
+<span class="kw">use </span>anyhow::{Context <span class="kw">as _</span>, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span>axum::{
     extract::{Json, State},
     http::{<span class="self">self</span>, StatusCode},
@@ -433,8 +449,8 @@
 <span class="kw">use </span>either::Either;
 <span class="kw">use </span>indexmap::IndexMap;
 <span class="kw">use </span>mistralrs_core::{
-    ChatCompletionResponse, Constraint, MistralRs, NormalRequest, Request, RequestMessage,
-    Response, SamplingParams, StopTokens <span class="kw">as </span>InternalStopTokens,
+    ChatCompletionResponse, Constraint, DrySamplingParams, MistralRs, NormalRequest, Request,
+    RequestMessage, Response, SamplingParams, StopTokens <span class="kw">as </span>InternalStopTokens,
 };
 <span class="kw">use </span>serde::Serialize;
 
@@ -487,6 +503,8 @@
                 Response::CompletionDone(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
                 Response::CompletionModelError(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
                 Response::CompletionChunk(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+                Response::ImageGeneration(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+                Response::Raw { .. } =&gt; <span class="macro">unreachable!</span>(),
             },
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Poll::Pending,
         }
@@ -579,7 +597,7 @@
                     Either::Left(content) =&gt; {
                         <span class="kw">let </span><span class="kw-2">mut </span>message_map: IndexMap&lt;
                             String,
-                            Either&lt;String, Vec&lt;IndexMap&lt;String, String&gt;&gt;&gt;,
+                            Either&lt;String, Vec&lt;IndexMap&lt;String, Value&gt;&gt;&gt;,
                         &gt; = IndexMap::new();
                         message_map.insert(<span class="string">"role"</span>.to_string(), Either::Left(message.role));
                         message_map
@@ -640,7 +658,7 @@
                         }
                         <span class="kw">let </span><span class="kw-2">mut </span>message_map: IndexMap&lt;
                             String,
-                            Either&lt;String, Vec&lt;IndexMap&lt;String, String&gt;&gt;&gt;,
+                            Either&lt;String, Vec&lt;IndexMap&lt;String, Value&gt;&gt;&gt;,
                         &gt; = IndexMap::new();
                         message_map.insert(<span class="string">"role"</span>.to_string(), Either::Left(message.role));
                         <span class="kw">let </span>(content, url) = <span class="kw">if </span>items[<span class="number">0</span>] == <span class="string">"text" </span>{
@@ -649,13 +667,15 @@
                             get_content_and_url(<span class="number">1</span>, <span class="number">0</span>, image_messages)<span class="question-mark">?
                         </span>};
 
-                        <span class="kw">let </span><span class="kw-2">mut </span>content_map = Vec::new();
+                        <span class="kw">let </span><span class="kw-2">mut </span>content_map: Vec&lt;IndexMap&lt;String, Value&gt;&gt; = Vec::new();
                         <span class="kw">let </span><span class="kw-2">mut </span>content_image_map = IndexMap::new();
-                        content_image_map.insert(<span class="string">"type"</span>.to_string(), <span class="string">"image"</span>.to_string());
+                        content_image_map
+                            .insert(<span class="string">"type"</span>.to_string(), Value::String(<span class="string">"image"</span>.to_string()));
                         content_map.push(content_image_map);
                         <span class="kw">let </span><span class="kw-2">mut </span>content_text_map = IndexMap::new();
-                        content_text_map.insert(<span class="string">"type"</span>.to_string(), <span class="string">"text"</span>.to_string());
-                        content_text_map.insert(<span class="string">"text"</span>.to_string(), content);
+                        content_text_map
+                            .insert(<span class="string">"type"</span>.to_string(), Value::String(<span class="string">"text"</span>.to_string()));
+                        content_text_map.insert(<span class="string">"text"</span>.to_string(), Value::String(content));
                         content_map.push(content_text_map);
 
                         message_map.insert(<span class="string">"content"</span>.to_string(), Either::Right(content_map));
@@ -666,24 +686,14 @@
             }
             <span class="kw">if </span>!image_urls.is_empty() {
                 <span class="kw">let </span><span class="kw-2">mut </span>images = Vec::new();
-                <span class="kw">for </span>url <span class="kw">in </span>image_urls {
-                    <span class="kw">let </span>bytes = <span class="kw">if </span>url.contains(<span class="string">"http"</span>) {
-                        <span class="comment">// Read from http
-                        </span><span class="kw">match </span>reqwest::get(url.clone()).<span class="kw">await </span>{
-                            <span class="prelude-val">Ok</span>(http_resp) =&gt; http_resp.bytes().<span class="kw">await</span><span class="question-mark">?</span>.to_vec(),
-                            <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">anyhow::bail!</span>(e),
-                        }
-                    } <span class="kw">else if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>f) = File::open(<span class="kw-2">&amp;</span>url) {
-                        <span class="comment">// Read from local file
-                        </span><span class="kw">let </span>metadata = fs::metadata(<span class="kw-2">&amp;</span>url)<span class="question-mark">?</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>buffer = <span class="macro">vec!</span>[<span class="number">0</span>; metadata.len() <span class="kw">as </span>usize];
-                        f.read_exact(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
-                        buffer
-                    } <span class="kw">else </span>{
-                        <span class="comment">// Decode with base64
-                        </span>general_purpose::STANDARD.decode(url)<span class="question-mark">?
-                    </span>};
-                    images.push(image::load_from_memory(<span class="kw-2">&amp;</span>bytes)<span class="question-mark">?</span>);
+                <span class="kw">for </span>url_unparsed <span class="kw">in </span>image_urls {
+                    <span class="kw">let </span>image = util::parse_image_url(<span class="kw-2">&amp;</span>url_unparsed)
+                        .<span class="kw">await
+                        </span>.with_context(|| {
+                            <span class="macro">format!</span>(<span class="string">"Failed to parse image resource: {}"</span>, url_unparsed)
+                        })<span class="question-mark">?</span>;
+
+                    images.push(image);
                 }
                 RequestMessage::VisionChat { messages, images }
             } <span class="kw">else </span>{
@@ -692,7 +702,7 @@
         }
         Either::Right(prompt) =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>messages = Vec::new();
-            <span class="kw">let </span><span class="kw-2">mut </span>message_map: IndexMap&lt;String, Either&lt;String, Vec&lt;IndexMap&lt;String, String&gt;&gt;&gt;&gt; =
+            <span class="kw">let </span><span class="kw-2">mut </span>message_map: IndexMap&lt;String, Either&lt;String, Vec&lt;IndexMap&lt;String, Value&gt;&gt;&gt;&gt; =
                 IndexMap::new();
             message_map.insert(<span class="string">"role"</span>.to_string(), Either::Left(<span class="string">"user"</span>.to_string()));
             message_map.insert(<span class="string">"content"</span>.to_string(), Either::Left(prompt));
@@ -700,6 +710,17 @@
             RequestMessage::Chat(messages)
         }
     };
+
+    <span class="kw">let </span>dry_params = <span class="kw">if let </span><span class="prelude-val">Some</span>(dry_multiplier) = oairequest.dry_multiplier {
+        <span class="prelude-val">Some</span>(DrySamplingParams::new_with_defaults(
+            dry_multiplier,
+            oairequest.dry_sequence_breakers,
+            oairequest.dry_base,
+            oairequest.dry_allowed_length,
+        )<span class="question-mark">?</span>)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>};
 
     <span class="kw">let </span>is_streaming = oairequest.stream.unwrap_or(<span class="bool-val">false</span>);
     <span class="prelude-val">Ok</span>((
@@ -718,17 +739,24 @@
                 stop_toks,
                 logits_bias: oairequest.logit_bias,
                 n_choices: oairequest.n_choices,
+                dry_params,
             },
             response: tx,
             return_logprobs: oairequest.logprobs,
             is_streaming,
             suffix: <span class="prelude-val">None</span>,
             constraint: <span class="kw">match </span>oairequest.grammar {
-                <span class="prelude-val">Some</span>(Grammar::Yacc(yacc)) =&gt; Constraint::Yacc(yacc),
                 <span class="prelude-val">Some</span>(Grammar::Regex(regex)) =&gt; Constraint::Regex(regex),
+                <span class="prelude-val">Some</span>(Grammar::Lark(lark)) =&gt; Constraint::Lark(lark),
+                <span class="prelude-val">Some</span>(Grammar::JsonSchema(schema)) =&gt; Constraint::JsonSchema(schema),
+                <span class="prelude-val">Some</span>(Grammar::Llguidance(llguidance)) =&gt; Constraint::Llguidance(llguidance),
                 <span class="prelude-val">None </span>=&gt; Constraint::None,
             },
             adapters: oairequest.adapters,
+            tool_choice: oairequest.tool_choice,
+            tools: oairequest.tools,
+            logits_processors: <span class="prelude-val">None</span>,
+            return_raw_logits: <span class="bool-val">false</span>,
         }),
         is_streaming,
     ))
@@ -809,6 +837,8 @@
             Response::CompletionDone(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             Response::CompletionModelError(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             Response::CompletionChunk(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+            Response::ImageGeneration(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+            Response::Raw { .. } =&gt; <span class="macro">unreachable!</span>(),
         }
     }
 }

@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/speculative.rs`."><title>speculative.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/speculative.rs`."><title>speculative.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/pipeline/</div>speculative.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -631,14 +632,73 @@
 <a href="#631" id="631">631</a>
 <a href="#632" id="632">632</a>
 <a href="#633" id="633">633</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>std::{
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::{
     any::Any,
     iter::zip,
     sync::{Arc, Mutex},
+    time::{Duration, Instant},
 };
 
 <span class="kw">use </span>anyhow::Result <span class="kw">as </span>anyhowResult;
-<span class="kw">use </span>candle_core::{quantized::GgmlDType, Device, IndexOp, <span class="prelude-ty">Result</span>, Tensor};
+<span class="kw">use </span>candle_core::{Device, IndexOp, <span class="prelude-ty">Result</span>, Tensor};
+<span class="kw">use </span>mistralrs_quant::IsqType;
 <span class="kw">use </span>rand_isaac::Isaac64Rng;
 <span class="kw">use </span>tokenizers::Tokenizer;
 <span class="kw">use </span>tracing::warn;
@@ -649,7 +709,7 @@
         sampling::{
             finish_or_add_toks_to_seq, sample_sequence, sample_target_sequence_speculative,
         },
-        AdapterInstruction, Cache,
+        AdapterInstruction,
     },
     prefix_cacher::PrefixCacheManager,
     sequence::{Sequence, SequenceRecognizer},
@@ -658,10 +718,10 @@
 };
 
 <span class="kw">use super</span>::{
-    cache_manager::DefaultCacheManager, chat_template::ChatTemplate, sampling::SpeculativeSample,
+    cache_manager::FullCacheManager, chat_template::ChatTemplate, sampling::SpeculativeSample,
     AdapterActivationMixin, AnyMoePipelineMixin, CacheBackendMetadata, CacheInstruction,
-    CacheManager, CacheManagerMixin, GeneralMetadata, IsqPipelineMixin, MetadataMixin,
-    ModelCategory, ModelPaths, PreProcessingMixin,
+    CacheManager, CacheManagerMixin, EitherCache, ForwardInputsResult, GeneralMetadata,
+    IsqPipelineMixin, MetadataMixin, ModelCategory, ModelPaths, PreProcessingMixin,
 };
 
 <span class="doccomment">/// A loader for a speculative pipeline using 2 [`Loader`]s.
@@ -681,7 +741,7 @@
         device: <span class="kw-2">&amp;</span>Device,
         silent: bool,
         mapper: DeviceMapMetadata,
-        in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+        in_situ_quant: <span class="prelude-ty">Option</span>&lt;IsqType&gt;,
         paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; anyhowResult&lt;Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">let </span>paged_attn_config = <span class="kw">if </span>paged_attn_config.is_none() {
@@ -728,7 +788,7 @@
         device: <span class="kw-2">&amp;</span>Device,
         silent: bool,
         mapper: DeviceMapMetadata,
-        in_situ_quant: <span class="prelude-ty">Option</span>&lt;GgmlDType&gt;,
+        in_situ_quant: <span class="prelude-ty">Option</span>&lt;IsqType&gt;,
         paged_attn_config: <span class="prelude-ty">Option</span>&lt;PagedAttentionConfig&gt;,
     ) -&gt; anyhowResult&lt;Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline + Send + Sync&gt;&gt;&gt; {
         <span class="kw">let </span>paged_attn_config = <span class="kw">if </span>paged_attn_config.is_none() {
@@ -812,8 +872,22 @@
         draft: Arc&lt;tokio::sync::Mutex&lt;<span class="kw">dyn </span>Pipeline&gt;&gt;,
         config: SpeculativeConfig,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">if </span><span class="macro">get_mut_arcmutex!</span>(target).tokenizer().get_vocab(<span class="bool-val">true</span>)
-            != <span class="macro">get_mut_arcmutex!</span>(draft).tokenizer().get_vocab(<span class="bool-val">true</span>)
+        <span class="kw">if </span><span class="macro">get_mut_arcmutex!</span>(target)
+            .tokenizer()
+            .as_ref()
+            .ok_or(candle_core::Error::Msg(
+                <span class="string">"`SpeculativePipeline::new` requires the target pipeline to have a token trie"
+                    </span>.to_string(),
+            ))<span class="question-mark">?
+            </span>.get_vocab(<span class="bool-val">true</span>)
+            != <span class="macro">get_mut_arcmutex!</span>(draft)
+                .tokenizer()
+                .as_ref()
+                .ok_or(candle_core::Error::Msg(
+                    <span class="string">"`SpeculativePipeline::new` requires the draft pipeline to have a token trie"
+                        </span>.to_string(),
+                ))<span class="question-mark">?
+                </span>.get_vocab(<span class="bool-val">true</span>)
         {
             <span class="macro">candle_core::bail!</span>(<span class="string">"Target and draft models' tokenizer vocab do not match. This is required for speculative decoding."</span>);
         }
@@ -845,7 +919,7 @@
 }
 
 <span class="kw">impl </span>PreProcessingMixin <span class="kw">for </span>SpeculativePipeline {
-    <span class="kw">fn </span>get_chat_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;ChatTemplate&gt; {
+    <span class="kw">fn </span>get_chat_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;ChatTemplate&gt;&gt; {
         <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).get_chat_template()
     }
     <span class="kw">fn </span>get_input_processor_config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>Any&gt;&gt; {
@@ -854,37 +928,46 @@
 }
 
 <span class="kw">impl </span>IsqPipelineMixin <span class="kw">for </span>SpeculativePipeline {
-    <span class="kw">fn </span>re_isq_model(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dtype: GgmlDType) -&gt; anyhow::Result&lt;()&gt; {
+    <span class="kw">fn </span>re_isq_model(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dtype: IsqType) -&gt; anyhow::Result&lt;()&gt; {
         <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).re_isq_model(dtype)<span class="question-mark">?</span>;
         <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).re_isq_model(dtype)
     }
 }
 
-<span class="kw">impl </span>CacheManagerMixin <span class="kw">for </span>SpeculativePipeline {
+<span class="comment">// TODO: correct handling of cloning in and out for normal cache
+</span><span class="kw">impl </span>CacheManagerMixin <span class="kw">for </span>SpeculativePipeline {
     <span class="kw">fn </span>clone_in_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
-        DefaultCacheManager.clone_in_cache(
-            <span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft),
-            seqs,
-            modify_draft_cache,
-        );
-        DefaultCacheManager.clone_in_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target), seqs, <span class="bool-val">false</span>);
+        FullCacheManager.clone_in_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft), seqs, modify_draft_cache);
+        FullCacheManager.clone_in_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target), seqs, <span class="bool-val">false</span>);
     }
     <span class="kw">fn </span>clone_out_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence], modify_draft_cache: bool) {
-        DefaultCacheManager.clone_out_cache(
+        FullCacheManager.clone_out_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft), seqs, modify_draft_cache);
+        FullCacheManager.clone_out_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target), seqs, <span class="bool-val">false</span>);
+    }
+    <span class="kw">fn </span>set_none_cache(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
+        reset_non_granular: bool,
+        modify_draft_cache: bool,
+        load_preallocated_cache: bool,
+    ) {
+        FullCacheManager.set_none_cache(
             <span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft),
             seqs,
             modify_draft_cache,
+            load_preallocated_cache,
         );
-        DefaultCacheManager.clone_out_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target), seqs, <span class="bool-val">false</span>);
-    }
-    <span class="kw">fn </span>set_none_cache(<span class="kw-2">&amp;</span><span class="self">self</span>, reset_non_granular: bool, modify_draft_cache: bool) {
-        DefaultCacheManager.set_none_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft), modify_draft_cache);
-        DefaultCacheManager.set_none_cache(<span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target), <span class="bool-val">false</span>);
+        FullCacheManager.set_none_cache(
+            <span class="kw-2">&amp;*</span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target),
+            seqs,
+            <span class="bool-val">false</span>,
+            load_preallocated_cache,
+        );
         <span class="kw">if </span>reset_non_granular {
             <span class="self">self</span>.reset_non_granular_state()
         }
     }
-    <span class="kw">fn </span>cache(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Cache {
+    <span class="kw">fn </span>cache(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>EitherCache {
         <span class="macro">unreachable!</span>()
     }
 }
@@ -903,7 +986,7 @@
     <span class="kw">fn </span>device(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Device {
         <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).device()
     }
-    <span class="kw">fn </span>tokenizer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;Tokenizer&gt; {
+    <span class="kw">fn </span>tokenizer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Arc&lt;Tokenizer&gt;&gt; {
         <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).tokenizer()
     }
     <span class="kw">fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
@@ -925,13 +1008,17 @@
 
 <span class="attr">#[async_trait::async_trait]
 </span><span class="kw">impl </span>Pipeline <span class="kw">for </span>SpeculativePipeline {
-    <span class="kw">fn </span>forward_inputs(<span class="kw-2">&amp;</span><span class="self">self</span>, _inputs: Box&lt;<span class="kw">dyn </span>Any&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+    <span class="kw">fn </span>forward_inputs(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        _inputs: Box&lt;<span class="kw">dyn </span>Any&gt;,
+        _return_raw_logits: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;ForwardInputsResult&gt; {
         <span class="macro">unreachable!</span>()
     }
-    <span class="kw">async fn </span>sample(
+    <span class="kw">async fn </span>sample_causal_gen(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         _seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
-        _logits: Tensor,
+        _logits: Vec&lt;Tensor&gt;,
         _prefix_cacher: <span class="kw-2">&amp;mut </span>PrefixCacheManager,
         _disable_eos_stop: bool,
         _rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
@@ -942,11 +1029,12 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         input_seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
         is_prompt: bool,
+        _return_raw_logits: bool,
         prefix_cacher: <span class="kw-2">&amp;mut </span>PrefixCacheManager,
         disable_eos_stop: bool,
         rng: Arc&lt;Mutex&lt;Isaac64Rng&gt;&gt;,
         backend_metadata: CacheBackendMetadata&lt;<span class="lifetime">'_</span>&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Duration&gt; {
         <span class="kw">match </span>backend_metadata {
             CacheBackendMetadata::DefaultInstructions { pre_op, post_op } =&gt; {
                 <span class="kw">match </span>pre_op {
@@ -982,6 +1070,7 @@
                     CacheInstruction::Reset {
                         reset_non_granular,
                         adapter_inst,
+                        load_preallocated_cache,
                     } =&gt; {
                         <span class="kw">match </span>adapter_inst {
                             AdapterInstruction::Activate(adapters) =&gt; {
@@ -995,11 +1084,17 @@
                             </span>}
                             AdapterInstruction::None =&gt; <span class="number">0</span>,
                         };
-                        <span class="self">self</span>.set_none_cache(reset_non_granular, <span class="bool-val">false</span>)
+                        <span class="self">self</span>.set_none_cache(
+                            input_seqs,
+                            reset_non_granular,
+                            <span class="bool-val">false</span>,
+                            load_preallocated_cache,
+                        )
                     }
                     <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">"Unreachable PRE cache op."</span>),
                 }
 
+                <span class="kw">let </span>start = Instant::now();
                 <span class="macro">assert_eq!</span>(input_seqs.len(), <span class="number">1</span>);
 
                 <span class="kw">let </span>seq = <span class="kw-2">&amp;mut </span>input_seqs[<span class="number">0</span>];
@@ -1007,7 +1102,6 @@
                 <span class="comment">// ======================= Run draft model gamma times producing tokens ============================
                 // ======================= Sample the `gamma` logits. ============================
                 </span><span class="kw">let </span><span class="kw-2">mut </span>draft_samples = Vec::new();
-                <span class="kw">let </span>repeat_last_n = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).get_metadata().repeat_last_n;
                 <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="self">self</span>.gamma {
                     <span class="kw">let </span>is_xlora = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).get_metadata().is_xlora;
                     <span class="kw">let </span>device = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).device();
@@ -1024,21 +1118,28 @@
                             <span class="kw-2">&amp;</span>device,
                             has_no_kv_cache,
                             <span class="prelude-val">None</span>,
+                            <span class="bool-val">false</span>,
                             <span class="prelude-val">None</span>,
                             <span class="prelude-val">None</span>, <span class="comment">// TODO: get block tables/handle it
+                            </span><span class="prelude-val">None</span>, <span class="comment">// TODO: do we support???
                         </span>)
+                        .nth(<span class="number">0</span>)
+                        .unwrap()
                         .unwrap();
-                    <span class="kw">let </span>logits = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).forward_inputs(Box::new(inputs))<span class="question-mark">?</span>;
+                    <span class="kw">let </span>logits =
+                        <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).forward_inputs(Box::new(inputs), <span class="bool-val">false</span>)<span class="question-mark">?</span>;
+                    <span class="attr">#[allow(irrefutable_let_patterns)]
+                    </span><span class="kw">let </span>ForwardInputsResult::CausalGeneration { logits } = logits
+                    <span class="kw">else </span>{
+                        <span class="macro">candle_core::bail!</span>(
+                            <span class="string">"Speculative decoding requires `CausalGeneration` forward results"
+                        </span>);
+                    };
 
                     <span class="kw">let </span>sample = sample_sequence(
                         logits.clone(),
                         seq,
                         seq.return_logprobs(),
-                        repeat_last_n,
-                        <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft)
-                            .get_metadata()
-                            .tok_trie
-                            .clone(),
                         rng.clone(),
                         <span class="bool-val">false</span>, <span class="comment">// todo tune
                         </span><span class="bool-val">false</span>, <span class="comment">// do not add to tok trie yet
@@ -1066,10 +1167,13 @@
 
                 <span class="comment">// ======================= Run the model with all draft tokens. ============================
 
-                </span><span class="kw">let </span>initial_cache_len = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).cache().lock()[<span class="number">0</span>]
-                    .as_ref()
-                    .map(|(k, <span class="kw">_</span>)| k.dims()[<span class="number">2</span>])
-                    .unwrap_or(<span class="number">0</span>);
+                </span><span class="kw">let </span>initial_cache_len = <span class="kw">match </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).cache() {
+                    EitherCache::Full(full) =&gt; full.lock()[<span class="number">0</span>]
+                        .as_ref()
+                        .map(|(k, <span class="kw">_</span>)| k.dims()[<span class="number">2</span>])
+                        .unwrap_or(<span class="number">0</span>),
+                    EitherCache::Normal(normal) =&gt; normal.lock().unwrap().<span class="number">0</span>[<span class="number">0</span>].current_seq_len(),
+                };
 
                 <span class="comment">// ========= Run the model ============
                 </span><span class="kw">let </span>is_xlora = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).get_metadata().is_xlora;
@@ -1088,12 +1192,24 @@
                         <span class="kw-2">&amp;</span>device,
                         has_no_kv_cache,
                         <span class="prelude-val">Some</span>((<span class="self">self</span>.gamma, initial_cache_len)), <span class="comment">// Get the last gamma, see above
-                        </span><span class="prelude-val">None</span>,
+                        </span><span class="bool-val">false</span>,
+                        <span class="prelude-val">None</span>,
                         <span class="prelude-val">None</span>, <span class="comment">// TODO: get block tables/handle it
+                        </span><span class="prelude-val">None</span>, <span class="comment">// TODO: do we support???
                     </span>)
+                    .nth(<span class="number">0</span>)
+                    .unwrap()
                     .unwrap();
 
-                <span class="kw">let </span>logits = <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).forward_inputs(Box::new(inputs))<span class="question-mark">?</span>;
+                <span class="kw">let </span>logits =
+                    <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).forward_inputs(Box::new(inputs), <span class="bool-val">false</span>)<span class="question-mark">?</span>;
+                <span class="attr">#[allow(irrefutable_let_patterns)]
+                </span><span class="kw">let </span>ForwardInputsResult::CausalGeneration { logits } = logits
+                <span class="kw">else </span>{
+                    <span class="macro">candle_core::bail!</span>(
+                        <span class="string">"Speculative decoding requires `CausalGeneration` forward results"
+                    </span>);
+                };
 
                 <span class="comment">// Reset the prefill tokens
                 </span>seq.reset_prefill_toks();
@@ -1104,11 +1220,6 @@
                     logits.clone(),
                     seq,
                     seq.return_logprobs(),
-                    repeat_last_n,
-                    <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft)
-                        .get_metadata()
-                        .tok_trie
-                        .clone(),
                     rng.clone(),
                     <span class="self">self</span>.gamma,
                 )
@@ -1125,44 +1236,56 @@
 
                 <span class="comment">// ======================= Narrow caches to account for rejections ============================
                 </span><span class="kw">let </span>n_not_accepted = <span class="self">self</span>.gamma - accepted_tokens.len();
-                <span class="kw">for </span>(k, v) <span class="kw">in </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft)
-                    .cache()
-                    .lock()
-                    .iter_mut()
-                    .flatten()
-                {
-                    <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
-                    <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
-                }
-                <span class="kw">if </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).get_metadata().is_xlora {
-                    <span class="kw">for </span>(k, v) <span class="kw">in </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft)
-                        .cache()
-                        .xlora_lock()
-                        .iter_mut()
-                        .flatten()
-                    {
-                        <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
-                        <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                <span class="kw">match </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).cache() {
+                    EitherCache::Full(full) =&gt; {
+                        <span class="kw">for </span>(k, v) <span class="kw">in </span>full.lock().iter_mut().flatten() {
+                            <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                            <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                        }
+                    }
+                    EitherCache::Normal(normal) =&gt; {
+                        <span class="kw">for </span>cache <span class="kw">in </span><span class="kw-2">&amp;mut *</span>normal.lock().unwrap().<span class="number">0 </span>{
+                            cache.set_len(cache.current_seq_len() - n_not_accepted);
+                        }
                     }
                 }
-                <span class="kw">for </span>(k, v) <span class="kw">in </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target)
-                    .cache()
-                    .lock()
-                    .iter_mut()
-                    .flatten()
-                {
-                    <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
-                    <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                <span class="kw">if </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).get_metadata().is_xlora {
+                    <span class="kw">match </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).cache() {
+                        EitherCache::Full(full) =&gt; {
+                            <span class="kw">for </span>(k, v) <span class="kw">in </span>full.xlora_lock().iter_mut().flatten() {
+                                <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                                <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                            }
+                        }
+                        EitherCache::Normal(<span class="kw">_</span>) =&gt; {
+                            <span class="macro">unreachable!</span>()
+                        }
+                    }
+                }
+                <span class="kw">match </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).cache() {
+                    EitherCache::Full(full) =&gt; {
+                        <span class="kw">for </span>(k, v) <span class="kw">in </span>full.lock().iter_mut().flatten() {
+                            <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                            <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                        }
+                    }
+                    EitherCache::Normal(normal) =&gt; {
+                        <span class="kw">for </span>cache <span class="kw">in </span><span class="kw-2">&amp;mut *</span>normal.lock().unwrap().<span class="number">0 </span>{
+                            cache.set_len(cache.current_seq_len() - n_not_accepted);
+                        }
+                    }
                 }
                 <span class="kw">if </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.draft).get_metadata().is_xlora {
-                    <span class="kw">for </span>(k, v) <span class="kw">in </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target)
-                        .cache()
-                        .xlora_lock()
-                        .iter_mut()
-                        .flatten()
-                    {
-                        <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
-                        <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                    <span class="kw">match </span><span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target).cache() {
+                        EitherCache::Full(full) =&gt; {
+                            <span class="kw">for </span>(k, v) <span class="kw">in </span>full.xlora_lock().iter_mut().flatten() {
+                                <span class="kw-2">*</span>k = k.i((.., .., ..k.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                                <span class="kw-2">*</span>v = v.i((.., .., ..v.dims()[<span class="number">2</span>] - n_not_accepted, ..))<span class="question-mark">?</span>;
+                            }
+                        }
+                        EitherCache::Normal(<span class="kw">_</span>) =&gt; {
+                            <span class="macro">unreachable!</span>()
+                        }
                     }
                 }
 
@@ -1188,19 +1311,9 @@
                     )
                     .<span class="kw">await</span><span class="question-mark">?</span>;
                     <span class="kw">match </span>seq.recognizer {
-                        SequenceRecognizer::Regex(<span class="kw-2">ref mut </span>rx) =&gt; {
-                            <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target)
-                                .get_metadata()
-                                .tok_trie
-                                .append_token(rx.as_mut(), accepted.token)
-                                .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
-                        }
-                        SequenceRecognizer::Cfg(<span class="kw-2">ref mut </span>cfg) =&gt; {
-                            <span class="macro">get_mut_arcmutex!</span>(<span class="self">self</span>.target)
-                                .get_metadata()
-                                .tok_trie
-                                .append_token(cfg.as_mut(), accepted.token)
-                                .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
+                        SequenceRecognizer::Llguidance(<span class="kw-2">ref mut </span>llg) =&gt; {
+                            llg.commit_token(<span class="prelude-val">Some</span>(accepted.token))
+                                .map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
                         }
                         SequenceRecognizer::None =&gt; {}
                     }
@@ -1212,11 +1325,6 @@
                     logits.clone(),
                     seq,
                     seq.return_logprobs(),
-                    repeat_last_n,
-                    get_mut_arcmutex!(self.draft)
-                        .get_metadata()
-                        .tok_trie
-                        .clone(),
                     rng.clone(),
                     false, // todo tune
                     true, // do not add to tok trie yet
@@ -1225,8 +1333,10 @@
                 .await?;
                 finish_or_add_toks_to_seq(self, prefix_cacher, seq, sample, eos_tok, false);
                 */
+                </span><span class="kw">let </span>end = Instant::now();
+                <span class="kw">let </span>exec_duration = end.duration_since(start);
 
-                </span><span class="kw">match </span>post_op {
+                <span class="kw">match </span>post_op {
                     CacheInstruction::Out =&gt; {
                         <span class="self">self</span>.clone_out_cache(input_seqs, <span class="bool-val">true</span>);
                     }
@@ -1234,7 +1344,13 @@
                     CacheInstruction::Reset {
                         reset_non_granular,
                         adapter_inst: <span class="kw">_</span>,
-                    } =&gt; <span class="self">self</span>.set_none_cache(reset_non_granular, <span class="bool-val">true</span>),
+                        load_preallocated_cache,
+                    } =&gt; <span class="self">self</span>.set_none_cache(
+                        input_seqs,
+                        reset_non_granular,
+                        <span class="bool-val">true</span>,
+                        load_preallocated_cache,
+                    ),
                     <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">"Unreachable pre cache op."</span>),
                 }
 
@@ -1247,7 +1363,7 @@
                 // - Added the accepted tokens to buffer and trie
                 // - Maybe fixed up cache of base model based on accepted tokens.
 
-                </span><span class="prelude-val">Ok</span>(())
+                </span><span class="prelude-val">Ok</span>(exec_duration)
             }
             CacheBackendMetadata::PagedAttention {
                 metadata: <span class="kw">_</span>,
@@ -1258,7 +1374,7 @@
         }
     }
     <span class="kw">fn </span>category(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ModelCategory {
-        <span class="self">self</span>.category
+        <span class="self">self</span>.category.clone()
     }
 }
 

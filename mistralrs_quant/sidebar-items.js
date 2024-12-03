@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["HqqAxis","HqqBits","IsqType","QuantMethodConfig","QuantMethodType","QuantizedSerdeType"],"fn":["linear","linear_b","linear_no_bias"],"struct":["DummyLayer","FP8Linear","GgufMatMul","GptqLayer","HqqConfig","HqqLayer","ImatrixLayerStats","QuantizedConfig","UnquantLinear"],"trait":["QuantMethod","QuantizedSerde"]};

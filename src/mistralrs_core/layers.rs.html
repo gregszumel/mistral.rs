@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/layers.rs`."><title>layers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/layers.rs`."><title>layers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/</div>layers.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -826,10 +827,239 @@
 <a href="#826" id="826">826</a>
 <a href="#827" id="827">827</a>
 <a href="#828" id="828">828</a>
-</pre></div><pre class="rust"><code><span class="attr">#![allow(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
+<a href="#981" id="981">981</a>
+<a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
+<a href="#1011" id="1011">1011</a>
+<a href="#1012" id="1012">1012</a>
+<a href="#1013" id="1013">1013</a>
+<a href="#1014" id="1014">1014</a>
+<a href="#1015" id="1015">1015</a>
+<a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a>
+<a href="#1050" id="1050">1050</a>
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
+<a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a></pre></div><pre class="rust"><code><span class="attr">#![allow(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
 
 </span><span class="kw">use </span>std::{
-    collections::HashMap,
     f32::consts::PI,
     ops::Mul,
     str::FromStr,
@@ -840,16 +1070,22 @@
 };
 
 <span class="kw">use </span>candle_core::{
-    quantized::{gguf_file, QMatMul, QTensor},
-    DType, Device, IndexOp, <span class="prelude-ty">Result</span>, Shape, Tensor, D,
+    quantized::{QMatMul, QTensor},
+    Context, DType, Device, IndexOp, <span class="prelude-ty">Result</span>, Tensor, D,
 };
-<span class="kw">use </span>candle_nn::{Linear, Module, VarBuilder};
-<span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>candle_nn::{Conv2d, Conv2dConfig, Linear, Module, VarBuilder};
+<span class="kw">use </span>mistralrs_quant::QuantMethod;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
+<span class="kw">pub use </span><span class="kw">crate</span>::attention::Sdpa;
 <span class="kw">pub use </span><span class="kw">crate</span>::layers_masker::CausalMasker;
-<span class="kw">pub use </span><span class="kw">crate</span>::layers_utils::{flash_attn, repeat_kv};
+<span class="kw">pub use </span><span class="kw">crate</span>::layers_utils::repeat_kv;
 <span class="kw">use crate</span>::{
-    cublaslt::CUBLASLT_HANDLE, models::llama, pipeline::Phi3RopeScaling, INHIBIT_GEMM_F16,
+    gguf::Content,
+    models::llama,
+    ops::SplitOp,
+    vision_models::mllama::{MLlamaRopeScaling, MLlamaRopeType, MLlamaTextConfig},
+    INHIBIT_GEMM_F16,
 };
 
 <span class="attr">#[derive(Debug, Clone)]
@@ -865,14 +1101,62 @@
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ eps, weight: w })
     }
 
+    <span class="doccomment">/// Gemma uses weight + 1.0
+    </span><span class="kw">pub fn </span>new_gemma(size: usize, eps: f64, vb: VarBuilder) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>inner = candle_nn::rms_norm_non_quant(size, eps, vb)<span class="question-mark">?</span>;
+        <span class="kw">let </span>w = (inner.inner().weight().clone() + <span class="number">1.0</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ eps, weight: w })
+    }
+
+    <span class="doccomment">/// Gemma uses weight + 1.0. Undo for UQFF generation.
+    </span><span class="kw">pub fn </span>undo_gemma(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            eps: <span class="self">self</span>.eps,
+            weight: (<span class="kw-2">&amp;</span><span class="self">self</span>.weight - <span class="number">1.0</span>)<span class="question-mark">?</span>,
+        })
+    }
+
     <span class="kw">pub fn </span>from_w(w: Tensor, eps: f64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ eps, weight: w })
+    }
+
+    <span class="kw">pub fn </span>weight(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Tensor {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.weight
     }
 }
 
 <span class="kw">impl </span>Module <span class="kw">for </span>RmsNorm {
     <span class="kw">fn </span>forward(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
         candle_nn::ops::rms_norm(<span class="kw-2">&amp;</span>x.contiguous()<span class="question-mark">?</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.weight, <span class="self">self</span>.eps <span class="kw">as </span>f32)
+    }
+}
+
+<span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>F32RmsNorm {
+    w: Tensor,
+    eps: f64,
+}
+
+<span class="kw">impl </span>F32RmsNorm {
+    <span class="kw">pub fn </span>new(size: usize, eps: f64, vb: VarBuilder) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            w: vb.get((size,), <span class="string">"weight"</span>)<span class="question-mark">?</span>,
+            eps,
+        })
+    }
+
+    <span class="kw">pub fn </span>weight(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Tensor {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.w
+    }
+}
+
+<span class="kw">impl </span>Module <span class="kw">for </span>F32RmsNorm {
+    <span class="kw">fn </span>forward(<span class="kw-2">&amp;</span><span class="self">self</span>, xs: <span class="kw-2">&amp;</span>Tensor) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">let </span>initial_type = xs.dtype();
+        <span class="kw">let </span><span class="kw-2">mut </span>xs = xs.to_dtype(DType::F32)<span class="question-mark">?</span>;
+        <span class="kw">let </span>var = xs.powf(<span class="number">2.</span>)<span class="question-mark">?</span>.mean_keepdim(D::Minus1)<span class="question-mark">?</span>;
+        xs = xs.broadcast_mul(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>var + <span class="self">self</span>.eps)<span class="question-mark">?</span>.recip()<span class="question-mark">?</span>.sqrt()<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+        xs.to_dtype(initial_type)<span class="question-mark">?</span>.broadcast_mul(<span class="kw-2">&amp;</span><span class="self">self</span>.w)
     }
 }
 
@@ -906,10 +1190,14 @@
     original_max_position_embeddings: usize,
 }
 
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">enum </span>ScaledRopeType {
-    Su,
-    Yarn,
+<span class="attr">#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = <span class="string">"lowercase"</span>)]
+</span><span class="kw">pub enum </span>ScaledRopeType {
+    <span class="attr">#[serde(alias = <span class="string">"su"</span>)]
+    #[serde(alias = <span class="string">"longrope"</span>)]
+    </span>Su,
+    <span class="attr">#[serde(alias = <span class="string">"yarn"</span>)]
+    </span>Yarn,
 }
 
 <span class="kw">impl </span>FromStr <span class="kw">for </span>ScaledRopeType {
@@ -925,15 +1213,27 @@
     }
 }
 
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">struct </span>ScaledRopeParams {
-    short_factor: Vec&lt;f64&gt;,
-    long_factor: Vec&lt;f64&gt;,
-    scaling_type: ScaledRopeType,
+<span class="attr">#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(untagged)]
+</span><span class="kw">pub enum </span>PhiRopeScalingConfig {
+    Classic {
+        short_factor: Vec&lt;f64&gt;,
+        long_factor: Vec&lt;f64&gt;,
+        <span class="attr">#[serde(rename = <span class="string">"type"</span>)]
+        </span>scaling_type: ScaledRopeType,
+    },
+    Scaled {
+        short_factor: Vec&lt;f64&gt;,
+        long_factor: Vec&lt;f64&gt;,
+        <span class="attr">#[serde(rename = <span class="string">"type"</span>)]
+        </span>scaling_type: ScaledRopeType,
+        long_mscale: f64,
+        short_mscale: f64,
+    },
 }
 
 <span class="kw">pub struct </span>PhiRopeConfig {
-    <span class="kw">pub </span>rope_scaling: <span class="prelude-ty">Option</span>&lt;HashMap&lt;String, Phi3RopeScaling&gt;&gt;,
+    <span class="kw">pub </span>rope_scaling: <span class="prelude-ty">Option</span>&lt;PhiRopeScalingConfig&gt;,
     <span class="kw">pub </span>max_position_embeddings: usize,
     <span class="kw">pub </span>original_max_position_embeddings: usize,
     <span class="kw">pub </span>rope_theta: f64,
@@ -941,98 +1241,204 @@
 }
 
 <span class="kw">impl </span>PhiRotaryEmbedding {
-    <span class="kw">pub fn </span>new(dtype: DType, cfg: <span class="kw">impl </span>Into&lt;PhiRopeConfig&gt;, dev: <span class="kw-2">&amp;</span>Device) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span>cfg: PhiRopeConfig = cfg.into();
-        <span class="kw">let </span>scaled_params = cfg.rope_scaling.as_ref().map(|r| ScaledRopeParams {
-            short_factor: r[<span class="string">"short_factor"</span>].clone().<span class="number">0</span>.left().unwrap(),
-            long_factor: r[<span class="string">"long_factor"</span>].clone().<span class="number">0</span>.left().unwrap(),
-            scaling_type: r[<span class="string">"type"</span>].clone().<span class="number">0</span>.right().unwrap().parse().unwrap(),
-        });
+    <span class="kw">fn </span>new_classic_scaled(
+        short_factor: <span class="kw-2">&amp;</span>[f64],
+        long_factor: <span class="kw-2">&amp;</span>[f64],
+        scaling_type: <span class="kw-2">&amp;</span>ScaledRopeType,
+        cfg: <span class="kw-2">&amp;</span>PhiRopeConfig,
+        dtype: DType,
+        dev: <span class="kw-2">&amp;</span>Device,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>max_seq_len = cfg.max_position_embeddings;
         <span class="kw">let </span>dim = cfg.head_dim;
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(scaled_params) = scaled_params {
-            <span class="comment">// Calculate scale
-            </span><span class="kw">let </span>scale =
-                cfg.max_position_embeddings <span class="kw">as </span>f64 / cfg.original_max_position_embeddings <span class="kw">as </span>f64;
-            <span class="kw">let </span>scaling_factor = <span class="kw">if </span>scale &lt;= <span class="number">1.0 </span>{
-                <span class="number">1.0
-            </span>} <span class="kw">else </span>{
-                <span class="kw">match </span>scaled_params.scaling_type {
-                    ScaledRopeType::Su =&gt; (<span class="number">1.0
-                        </span>+ scale.ln() / (cfg.original_max_position_embeddings <span class="kw">as </span>f64).ln())
-                    .sqrt(),
-                    ScaledRopeType::Yarn =&gt; <span class="number">0.1 </span>* scale.ln() + <span class="number">1.0</span>,
+        <span class="comment">// Calculate scale
+        </span><span class="kw">let </span>scale =
+            cfg.max_position_embeddings <span class="kw">as </span>f64 / cfg.original_max_position_embeddings <span class="kw">as </span>f64;
+        <span class="kw">let </span>scaling_factor = <span class="kw">if </span>scale &lt;= <span class="number">1.0 </span>{
+            <span class="number">1.0
+        </span>} <span class="kw">else </span>{
+            <span class="kw">match </span>scaling_type {
+                ScaledRopeType::Su =&gt; {
+                    (<span class="number">1.0 </span>+ scale.ln() / (cfg.original_max_position_embeddings <span class="kw">as </span>f64).ln()).sqrt()
                 }
-            };
+                ScaledRopeType::Yarn =&gt; <span class="number">0.1 </span>* scale.ln() + <span class="number">1.0</span>,
+            }
+        };
 
-            <span class="comment">// Calculate inv freqs for short, long
-            </span><span class="kw">let </span>inv_freq_long = (<span class="number">0</span>..dim)
-                .step_by(<span class="number">2</span>)
-                .enumerate()
-                .map(|(k, i)| {
-                    (<span class="number">1f64
-                        </span>/ (scaled_params.long_factor[k]
-                            * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64)))
-                        <span class="kw">as </span>f32
-                })
-                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-            <span class="kw">let </span>inv_freq_short = (<span class="number">0</span>..dim)
-                .step_by(<span class="number">2</span>)
-                .enumerate()
-                .map(|(k, i)| {
-                    (<span class="number">1f64
-                        </span>/ (scaled_params.short_factor[k]
-                            * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64)))
-                        <span class="kw">as </span>f32
-                })
-                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-            <span class="kw">let </span>inv_freq_len = inv_freq_long.len();
-
-            <span class="kw">let </span>t = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
-                </span>.to_dtype(DType::F32)<span class="question-mark">?
-                </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
-
-            <span class="comment">// Calculate sin,cos for long
-            </span><span class="kw">let </span>inv_freq_long = Tensor::from_vec(inv_freq_long, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>;
-            <span class="kw">let </span>freqs_long = t.matmul(<span class="kw-2">&amp;</span>inv_freq_long)<span class="question-mark">?</span>;
-            <span class="kw">let </span>long_sin = freqs_long.sin()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-            <span class="kw">let </span>long_cos = freqs_long.cos()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-
-            <span class="comment">// Calculate sin,cos for short
-            </span><span class="kw">let </span>inv_freq_short =
-                Tensor::from_vec(inv_freq_short, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>.to_dtype(DType::F32)<span class="question-mark">?</span>;
-            <span class="kw">let </span>freqs_short = t.matmul(<span class="kw-2">&amp;</span>inv_freq_short)<span class="question-mark">?</span>;
-            <span class="kw">let </span>short_sin = freqs_short.sin()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-            <span class="kw">let </span>short_cos = freqs_short.cos()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-
-            <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-                short_cos,
-                short_sin,
-                long_cos: <span class="prelude-val">Some</span>(long_cos),
-                long_sin: <span class="prelude-val">Some</span>(long_sin),
-                original_max_position_embeddings: cfg.original_max_position_embeddings,
+        <span class="comment">// Calculate inv freqs for short, long
+        </span><span class="kw">let </span>inv_freq_long = (<span class="number">0</span>..dim)
+            .step_by(<span class="number">2</span>)
+            .enumerate()
+            .map(|(k, i)| {
+                (<span class="number">1f64 </span>/ (long_factor[k] * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64))) <span class="kw">as </span>f32
             })
-        } <span class="kw">else </span>{
-            <span class="kw">let </span>inv_freq: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..dim)
-                .step_by(<span class="number">2</span>)
-                .map(|i| <span class="number">1f32 </span>/ cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64) <span class="kw">as </span>f32)
-                .collect();
-            <span class="kw">let </span>inv_freq_len = inv_freq.len();
-            <span class="kw">let </span>inv_freq = Tensor::from_vec(inv_freq, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>;
-            <span class="kw">let </span>t = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
-                </span>.to_dtype(DType::F32)<span class="question-mark">?
-                </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
-            <span class="kw">let </span>freqs = t.matmul(<span class="kw-2">&amp;</span>inv_freq)<span class="question-mark">?</span>;
-            <span class="kw">let </span>sin = freqs.sin()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-            <span class="kw">let </span>cos = freqs.cos()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-                short_cos: cos,
-                short_sin: sin,
-                long_cos: <span class="prelude-val">None</span>,
-                long_sin: <span class="prelude-val">None</span>,
-                original_max_position_embeddings: cfg.original_max_position_embeddings,
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+        <span class="kw">let </span>inv_freq_short = (<span class="number">0</span>..dim)
+            .step_by(<span class="number">2</span>)
+            .enumerate()
+            .map(|(k, i)| {
+                (<span class="number">1f64 </span>/ (short_factor[k] * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64))) <span class="kw">as </span>f32
             })
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+        <span class="kw">let </span>inv_freq_len = inv_freq_long.len();
+
+        <span class="kw">let </span>t = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
+            </span>.to_dtype(DType::F32)<span class="question-mark">?
+            </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
+
+        <span class="comment">// Calculate sin,cos for long
+        </span><span class="kw">let </span>inv_freq_long = Tensor::from_vec(inv_freq_long, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs_long = t.matmul(<span class="kw-2">&amp;</span>inv_freq_long)<span class="question-mark">?</span>;
+        <span class="kw">let </span>long_sin = freqs_long.sin()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+        <span class="kw">let </span>long_cos = freqs_long.cos()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+
+        <span class="comment">// Calculate sin,cos for short
+        </span><span class="kw">let </span>inv_freq_short =
+            Tensor::from_vec(inv_freq_short, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>.to_dtype(DType::F32)<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs_short = t.matmul(<span class="kw-2">&amp;</span>inv_freq_short)<span class="question-mark">?</span>;
+        <span class="kw">let </span>short_sin = freqs_short.sin()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+        <span class="kw">let </span>short_cos = freqs_short.cos()<span class="question-mark">?</span>.mul(scaling_factor)<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            short_cos,
+            short_sin,
+            long_cos: <span class="prelude-val">Some</span>(long_cos),
+            long_sin: <span class="prelude-val">Some</span>(long_sin),
+            original_max_position_embeddings: cfg.original_max_position_embeddings,
+        })
+    }
+
+    <span class="kw">fn </span>new_unscaled(cfg: <span class="kw-2">&amp;</span>PhiRopeConfig, dtype: DType, dev: <span class="kw-2">&amp;</span>Device) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>max_seq_len = cfg.max_position_embeddings;
+        <span class="kw">let </span>dim = cfg.head_dim;
+
+        <span class="kw">let </span>inv_freq: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..dim)
+            .step_by(<span class="number">2</span>)
+            .map(|i| <span class="number">1f32 </span>/ cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64) <span class="kw">as </span>f32)
+            .collect();
+        <span class="kw">let </span>inv_freq_len = inv_freq.len();
+        <span class="kw">let </span>inv_freq = Tensor::from_vec(inv_freq, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>;
+        <span class="kw">let </span>t = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
+            </span>.to_dtype(DType::F32)<span class="question-mark">?
+            </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs = t.matmul(<span class="kw-2">&amp;</span>inv_freq)<span class="question-mark">?</span>;
+        <span class="kw">let </span>sin = freqs.sin()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+        <span class="kw">let </span>cos = freqs.cos()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            short_cos: cos,
+            short_sin: sin,
+            long_cos: <span class="prelude-val">None</span>,
+            long_sin: <span class="prelude-val">None</span>,
+            original_max_position_embeddings: cfg.original_max_position_embeddings,
+        })
+    }
+
+    <span class="attr">#[allow(clippy::too_many_arguments)]
+    </span><span class="kw">fn </span>new_scaled(
+        short_factor: <span class="kw-2">&amp;</span>[f64],
+        long_factor: <span class="kw-2">&amp;</span>[f64],
+        scaling_type: <span class="kw-2">&amp;</span>ScaledRopeType,
+        long_mscale: f64,
+        short_mscale: f64,
+        cfg: <span class="kw-2">&amp;</span>PhiRopeConfig,
+        dtype: DType,
+        dev: <span class="kw-2">&amp;</span>Device,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>max_seq_len = cfg.max_position_embeddings;
+        <span class="kw">let </span>dim = cfg.head_dim;
+
+        <span class="kw">if </span>!<span class="macro">matches!</span>(scaling_type, ScaledRopeType::Su) {
+            <span class="macro">candle_core::bail!</span>(<span class="string">"Scaled Phi3 RoPE (non-classic scaled, with mscales) must have type `su`/`longrope`."</span>);
+        }
+
+        <span class="kw">if </span>short_factor.len() != dim / <span class="number">2 </span>{
+            <span class="macro">candle_core::bail!</span>(
+                <span class="string">"Misaligned length {}, expected {} for `su`/`longrope` short rescale factors"</span>,
+                short_factor.len(),
+                dim / <span class="number">2
+            </span>);
+        }
+        <span class="kw">if </span>long_factor.len() != dim / <span class="number">2 </span>{
+            <span class="macro">candle_core::bail!</span>(
+                <span class="string">"Misaligned length {}, expected {} for `su`/`longrope` long rescale factors"</span>,
+                long_factor.len(),
+                dim / <span class="number">2
+            </span>);
+        }
+
+        <span class="comment">// Short cos/sin
+        </span><span class="kw">let </span>inv_freq_short: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..dim)
+            .step_by(<span class="number">2</span>)
+            .enumerate()
+            .map(|(k, i)| {
+                <span class="number">1f32 </span>/ (short_factor[k] * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64)) <span class="kw">as </span>f32
+            })
+            .collect();
+        <span class="kw">let </span>inv_freq_len_short = inv_freq_short.len();
+        <span class="kw">let </span>inv_freq_short = Tensor::from_vec(inv_freq_short, (<span class="number">1</span>, inv_freq_len_short), dev)<span class="question-mark">?</span>;
+        <span class="kw">let </span>t_short = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
+            </span>.to_dtype(DType::F32)<span class="question-mark">?
+            </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs_short = t_short.matmul(<span class="kw-2">&amp;</span>inv_freq_short)<span class="question-mark">?</span>;
+        <span class="kw">let </span>sin_short = (freqs_short.sin()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">? </span>* short_mscale)<span class="question-mark">?</span>;
+        <span class="kw">let </span>cos_short = (freqs_short.cos()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">? </span>* short_mscale)<span class="question-mark">?</span>;
+
+        <span class="comment">// Long cos/sin
+        </span><span class="kw">let </span>inv_freq_long: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..dim)
+            .step_by(<span class="number">2</span>)
+            .enumerate()
+            .map(|(k, i)| {
+                <span class="number">1f32 </span>/ (long_factor[k] * cfg.rope_theta.powf(i <span class="kw">as </span>f64 / dim <span class="kw">as </span>f64)) <span class="kw">as </span>f32
+            })
+            .collect();
+        <span class="kw">let </span>inv_freq_len_long = inv_freq_long.len();
+        <span class="kw">let </span>inv_freq_long = Tensor::from_vec(inv_freq_long, (<span class="number">1</span>, inv_freq_len_long), dev)<span class="question-mark">?</span>;
+        <span class="kw">let </span>t_long = Tensor::arange(<span class="number">0u32</span>, max_seq_len <span class="kw">as </span>u32, dev)<span class="question-mark">?
+            </span>.to_dtype(DType::F32)<span class="question-mark">?
+            </span>.reshape((max_seq_len, <span class="number">1</span>))<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs_long = t_long.matmul(<span class="kw-2">&amp;</span>inv_freq_long)<span class="question-mark">?</span>;
+        <span class="kw">let </span>sin_long = (freqs_long.sin()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">? </span>* long_mscale)<span class="question-mark">?</span>;
+        <span class="kw">let </span>cos_long = (freqs_long.cos()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">? </span>* long_mscale)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            short_cos: cos_short,
+            short_sin: sin_short,
+            long_cos: <span class="prelude-val">Some</span>(cos_long),
+            long_sin: <span class="prelude-val">Some</span>(sin_long),
+            original_max_position_embeddings: cfg.original_max_position_embeddings,
+        })
+    }
+
+    <span class="kw">pub fn </span>new(dtype: DType, cfg: <span class="kw">impl </span>Into&lt;PhiRopeConfig&gt;, dev: <span class="kw-2">&amp;</span>Device) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>cfg: PhiRopeConfig = cfg.into();
+
+        <span class="kw">match </span><span class="kw-2">&amp;</span>cfg.rope_scaling {
+            <span class="prelude-val">Some</span>(PhiRopeScalingConfig::Classic {
+                short_factor,
+                long_factor,
+                scaling_type,
+            }) =&gt; {
+                <span class="self">Self</span>::new_classic_scaled(short_factor, long_factor, scaling_type, <span class="kw-2">&amp;</span>cfg, dtype, dev)
+            }
+
+            <span class="prelude-val">Some</span>(PhiRopeScalingConfig::Scaled {
+                short_factor,
+                long_factor,
+                scaling_type,
+                long_mscale,
+                short_mscale,
+            }) =&gt; <span class="self">Self</span>::new_scaled(
+                short_factor,
+                long_factor,
+                scaling_type,
+                <span class="kw-2">*</span>long_mscale,
+                <span class="kw-2">*</span>short_mscale,
+                <span class="kw-2">&amp;</span>cfg,
+                dtype,
+                dev,
+            ),
+
+            <span class="prelude-val">None </span>=&gt; <span class="self">Self</span>::new_unscaled(<span class="kw-2">&amp;</span>cfg, dtype, dev),
         }
     }
 
@@ -1088,7 +1494,7 @@
     Default(RotaryEmbedding),
 }
 
-<span class="attr">#[derive(Debug, Clone, Deserialize, Default)]
+<span class="attr">#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 </span><span class="kw">pub enum </span>Llama3RopeType {
     <span class="attr">#[serde(rename = <span class="string">"llama3"</span>)]
     </span>Llama3,
@@ -1097,7 +1503,7 @@
     </span>Default,
 }
 
-<span class="attr">#[derive(Debug, Clone, Deserialize, Default)]
+<span class="attr">#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 </span><span class="kw">pub struct </span>Llama3RopeConfig {
     <span class="kw">pub </span>factor: f32,
     <span class="kw">pub </span>low_freq_factor: f32,
@@ -1116,7 +1522,12 @@
 
 <span class="comment">// https://github.com/huggingface/transformers/blob/1392a6867f40a55dfabaf306745c67627598b1af/src/transformers/modeling_rope_utils.py#L298
 </span><span class="kw">impl </span>Llama3RotaryEmbedding {
-    <span class="kw">pub fn </span>new(dtype: DType, cfg: <span class="kw-2">&amp;</span>llama::Config, dev: <span class="kw-2">&amp;</span>Device, is_gpt_neox: bool) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    <span class="kw">pub fn </span>new_llama3(
+        dtype: DType,
+        cfg: <span class="kw-2">&amp;</span>llama::Config,
+        dev: <span class="kw-2">&amp;</span>Device,
+        is_gpt_neox: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">match </span><span class="kw-2">&amp;</span>cfg.rope_scaling {
             <span class="prelude-val">None
             </span>| <span class="prelude-val">Some</span>(Llama3RopeConfig {
@@ -1171,6 +1582,90 @@
         }
     }
 
+    <span class="kw">pub fn </span>new_mllama3(
+        dtype: DType,
+        cfg: <span class="kw-2">&amp;</span>MLlamaTextConfig,
+        dev: <span class="kw-2">&amp;</span>Device,
+        is_gpt_neox: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">match </span><span class="kw-2">&amp;</span>cfg.rope_scaling {
+            <span class="prelude-val">None
+            </span>| <span class="prelude-val">Some</span>(MLlamaRopeScaling {
+                rope_type: MLlamaRopeType::Default,
+                ..
+            }) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Default(RotaryEmbedding::new(
+                cfg.rope_theta,
+                cfg.hidden_size / cfg.num_attention_heads,
+                cfg.max_position_embeddings,
+                dev,
+                is_gpt_neox,
+                dtype,
+            )<span class="question-mark">?</span>)),
+            <span class="prelude-val">Some</span>(MLlamaRopeScaling {
+                rope_type: MLlamaRopeType::Llama3,
+                original_max_position_embeddings,
+                factor,
+                attention_factor: <span class="kw">_</span>,
+                beta_fast: <span class="kw">_</span>,
+                beta_slow: <span class="kw">_</span>,
+                short_factor: <span class="kw">_</span>,
+                long_factor: <span class="kw">_</span>,
+                low_freq_factor,
+                high_freq_factor,
+            }) =&gt; {
+                <span class="kw">let </span>factor = factor.context(<span class="string">"MLlama Llama3 RoPE needs `factor` parameter."</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>low_freq_factor = low_freq_factor
+                    .context(<span class="string">"MLlama Llama3 RoPE needs `low_freq_factor` parameter."</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>high_freq_factor = high_freq_factor
+                    .context(<span class="string">"MLlama Llama3 RoPE needs `high_freq_factor` parameter."</span>)<span class="question-mark">?</span>;
+
+                <span class="kw">let </span>low_freq_wavelen = <span class="kw-2">*</span>original_max_position_embeddings <span class="kw">as </span>f32 / low_freq_factor;
+                <span class="kw">let </span>high_freq_wavelen = <span class="kw-2">*</span>original_max_position_embeddings <span class="kw">as </span>f32 / high_freq_factor;
+
+                <span class="kw">let </span>head_dim = cfg.hidden_size / cfg.num_attention_heads;
+
+                <span class="kw">let </span>inv_freq = (<span class="number">0</span>..head_dim)
+                    .step_by(<span class="number">2</span>)
+                    .map(|i| <span class="number">1f32 </span>/ cfg.rope_theta.powf(i <span class="kw">as </span>f32 / head_dim <span class="kw">as </span>f32))
+                    .map(|freq| {
+                        <span class="kw">let </span>wavelen = <span class="number">2. </span>* PI / freq;
+                        <span class="kw">if </span>wavelen &lt; high_freq_wavelen {
+                            freq
+                        } <span class="kw">else if </span>wavelen &gt; low_freq_wavelen {
+                            freq / factor
+                        } <span class="kw">else </span>{
+                            <span class="kw">let </span>smooth = (<span class="kw-2">*</span>original_max_position_embeddings <span class="kw">as </span>f32 / wavelen
+                                - low_freq_factor)
+                                / (high_freq_factor - low_freq_factor);
+                            (<span class="number">1. </span>- smooth) * freq / factor + smooth * freq
+                        }
+                    })
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+                <span class="kw">let </span>inv_freq_len = inv_freq.len();
+                <span class="kw">let </span>inv_freq = Tensor::from_vec(inv_freq, (<span class="number">1</span>, inv_freq_len), dev)<span class="question-mark">?</span>;
+
+                <span class="kw">let </span>t = Tensor::arange(<span class="number">0u32</span>, cfg.max_position_embeddings <span class="kw">as </span>u32, dev)<span class="question-mark">?
+                    </span>.to_dtype(DType::F32)<span class="question-mark">?
+                    </span>.reshape((cfg.max_position_embeddings, <span class="number">1</span>))<span class="question-mark">?</span>;
+                <span class="kw">let </span>freqs = t.matmul(<span class="kw-2">&amp;</span>inv_freq)<span class="question-mark">?</span>;
+                <span class="kw">let </span>sin = freqs.sin()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+                <span class="kw">let </span>cos = freqs.cos()<span class="question-mark">?</span>.to_dtype(dtype)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(<span class="self">Self</span>::Llama3 {
+                    sin,
+                    cos,
+                    is_gptx: is_gpt_neox,
+                })
+            }
+            <span class="prelude-val">Some</span>(MLlamaRopeScaling {
+                rope_type: other, ..
+            }) =&gt; {
+                <span class="macro">candle_core::bail!</span>(
+                    <span class="string">"MLlama doesn't support any other RoPE type than `llama3`, got {other:?}"
+                </span>)
+            }
+        }
+    }
+
     <span class="kw">pub fn </span>forward(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         positions: <span class="kw-2">&amp;</span>[usize],
@@ -1212,6 +1707,84 @@
             }
             <span class="self">Self</span>::Default(rope) =&gt; rope.forward(positions, positions_kernel, q, k, b_sz),
         }
+    }
+}
+
+<span class="comment">// https://github.com/huggingface/transformers/blob/f2c388e3f946862f657acc1e21b272ec946fc66c/src/transformers/models/qwen2_vl/modeling_qwen2_vl.py#L107
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>Qwen2VLRotaryEmbedding {
+    inv_freq: Tensor,
+    mrope_section: Vec&lt;usize&gt;,
+}
+
+<span class="kw">impl </span>Qwen2VLRotaryEmbedding {
+    <span class="kw">pub fn </span>new(
+        base: f32,
+        head_dim: usize,
+        device: <span class="kw-2">&amp;</span>Device,
+        mrope_section: Vec&lt;usize&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>inv_freq: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..head_dim)
+            .step_by(<span class="number">2</span>)
+            .map(|i| <span class="number">1f32 </span>/ base.powf(i <span class="kw">as </span>f32 / head_dim <span class="kw">as </span>f32))
+            .collect();
+        <span class="kw">let </span>inv_freq_len = inv_freq.len();
+        <span class="kw">let </span>inv_freq = Tensor::from_vec(inv_freq, (inv_freq_len,), device)<span class="question-mark">?</span>.to_dtype(DType::F32)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            inv_freq,
+            mrope_section,
+        })
+    }
+
+    <span class="doccomment">/// (cos, sin)
+    </span><span class="kw">pub fn </span>compute_cos_sin(<span class="kw-2">&amp;</span><span class="self">self</span>, position_ids: <span class="kw-2">&amp;</span>Tensor, dtype: DType) -&gt; <span class="prelude-ty">Result</span>&lt;(Tensor, Tensor)&gt; {
+        <span class="kw">let </span>inv_freq_expanded =
+            <span class="self">self</span>.inv_freq
+                .reshape((<span class="number">1</span>, <span class="number">1</span>, (), <span class="number">1</span>))<span class="question-mark">?
+                </span>.repeat((<span class="number">3</span>, position_ids.dim(<span class="number">1</span>)<span class="question-mark">?</span>, <span class="number">1</span>, <span class="number">1</span>))<span class="question-mark">?</span>;
+        <span class="kw">let </span>position_ids_expanded = position_ids.unsqueeze(<span class="number">2</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>freqs = inv_freq_expanded
+            .matmul(<span class="kw-2">&amp;</span>position_ids_expanded.to_dtype(inv_freq_expanded.dtype())<span class="question-mark">?</span>)<span class="question-mark">?
+            </span>.transpose(<span class="number">2</span>, <span class="number">3</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>cos = freqs.cos()<span class="question-mark">?</span>;
+        <span class="kw">let </span>sin = freqs.sin()<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>cos = Tensor::cat(
+            <span class="kw-2">&amp;</span>cos.split(<span class="kw-2">&amp;</span><span class="self">self</span>.mrope_section, D::Minus1)<span class="question-mark">?
+                </span>.into_iter()
+                .enumerate()
+                .map(|(i, m)| m.i(i % <span class="number">3</span>))
+                .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;&gt;()<span class="question-mark">?</span>,
+            D::Minus1,
+        )<span class="question-mark">?
+        </span>.squeeze(<span class="number">0</span>)<span class="question-mark">?
+        </span>.to_dtype(dtype)<span class="question-mark">?
+        </span>.contiguous()<span class="question-mark">?</span>;
+        <span class="kw">let </span>sin = Tensor::cat(
+            <span class="kw-2">&amp;</span>sin.split(<span class="kw-2">&amp;</span><span class="self">self</span>.mrope_section, D::Minus1)<span class="question-mark">?
+                </span>.into_iter()
+                .enumerate()
+                .map(|(i, m)| m.i(i % <span class="number">3</span>))
+                .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;&gt;()<span class="question-mark">?</span>,
+            D::Minus1,
+        )<span class="question-mark">?
+        </span>.squeeze(<span class="number">0</span>)<span class="question-mark">?
+        </span>.to_dtype(dtype)<span class="question-mark">?
+        </span>.contiguous()<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>((cos, sin))
+    }
+
+    <span class="comment">// https://github.com/huggingface/transformers/blob/f2c388e3f946862f657acc1e21b272ec946fc66c/src/transformers/models/qwen2_vl/modeling_qwen2_vl.py#L203
+    </span><span class="kw">pub fn </span>forward(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        (cos, sin): <span class="kw-2">&amp;</span>(Tensor, Tensor),
+        q: <span class="kw-2">&amp;mut </span>Tensor,
+        k: <span class="kw-2">&amp;mut </span>Tensor,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw-2">*</span>q = candle_nn::rotary_emb::rope(<span class="kw-2">&amp;</span>q.contiguous()<span class="question-mark">?</span>, cos, sin)<span class="question-mark">?</span>;
+        <span class="kw-2">*</span>k = candle_nn::rotary_emb::rope(<span class="kw-2">&amp;</span>k.contiguous()<span class="question-mark">?</span>, cos, sin)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -1257,167 +1830,13 @@
             matmul.forward(x)
         }
     }
-}
 
-<span class="doccomment">/// Computes softmax(QK^T*sqrt(d_k))V
-</span><span class="kw">fn </span>naive_sdpa(
-    q: <span class="kw-2">&amp;</span>Tensor,
-    k: <span class="kw-2">&amp;</span>Tensor,
-    v: <span class="kw-2">&amp;</span>Tensor,
-    head_dim: usize,
-    mask: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Tensor&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
-    <span class="kw">let </span>att = MatMul.matmul_affine_div(
-        <span class="kw-2">&amp;</span>q.contiguous()<span class="question-mark">?</span>,
-        <span class="kw-2">&amp;</span>k.t()<span class="question-mark">?</span>.contiguous()<span class="question-mark">?</span>,
-        (head_dim <span class="kw">as </span>f64).sqrt(),
-    )<span class="question-mark">?</span>;
-
-    <span class="kw">let </span>att = <span class="kw">match </span>mask {
-        <span class="prelude-val">Some</span>(m) =&gt; att.broadcast_add(m)<span class="question-mark">?</span>,
-        <span class="prelude-val">None </span>=&gt; att,
-    };
-    <span class="kw">let </span>att = candle_nn::ops::softmax_last_dim(<span class="kw-2">&amp;</span>att)<span class="question-mark">?</span>;
-    <span class="comment">// Convert to contiguous as matmul doesn't support strided vs for now.
-    </span>MatMul.matmul(<span class="kw-2">&amp;</span>att, <span class="kw-2">&amp;</span>v.contiguous()<span class="question-mark">?</span>)
-}
-
-<span class="kw">pub struct </span>ScaledDotProductAttention;
-
-<span class="kw">impl </span>ScaledDotProductAttention {
-    <span class="doccomment">/// Computes softmax(QK^T*sqrt(d_k))V
-    ///
-    /// The attention implementation is dispatched as follows:
-    /// 1) If `use_flash_attn == true`, use a flash attention V2 kernel
-    /// 2) If using CUDA and the cuBLASLt kernel is initialized, then it will use an optimized version.
-    /// 3) Otherwise, use the "naive" SDPA implementation.
-    </span><span class="attr">#[allow(unused_variables, clippy::too_many_arguments)]
-    </span><span class="kw">pub fn </span>run_attention(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        q: <span class="kw-2">&amp;</span>Tensor,
-        k: <span class="kw-2">&amp;</span>Tensor,
-        v: <span class="kw-2">&amp;</span>Tensor,
-        n_attn_heads: usize,
-        head_dim: usize,
-        mask: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Tensor&gt;,
-        use_flash_attn: bool,
-        b_sz: usize,
-        seq_len: usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
-        <span class="kw">if </span>use_flash_attn {
-            <span class="comment">// flash-attn expects (b_sz, seq_len, nheads, head_dim)
-            </span><span class="kw">let </span>q = q.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
-            <span class="kw">let </span>k = k.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
-            <span class="kw">let </span>v = v.transpose(<span class="number">1</span>, <span class="number">2</span>)<span class="question-mark">?</span>;
-            <span class="kw">let </span>softmax_scale = <span class="number">1f32 </span>/ (head_dim <span class="kw">as </span>f32).sqrt();
-            <span class="kw">return </span>flash_attn(<span class="kw-2">&amp;</span>q, <span class="kw-2">&amp;</span>k, <span class="kw-2">&amp;</span>v, softmax_scale, seq_len &gt; <span class="number">1</span>)<span class="question-mark">?</span>.transpose(<span class="number">1</span>, <span class="number">2</span>);
-        }
-
-        <span class="kw">if let </span>(Device::Cuda(<span class="kw">_</span>), <span class="prelude-val">Some</span>(cublaslt)) = (q.device(), <span class="kw-2">*</span>CUBLASLT_HANDLE.lock().unwrap()) {
-            <span class="kw">if </span>!get_use_matmul_via_f16() {
-                <span class="attr">#[cfg(feature = <span class="string">"cuda"</span>)]
-                </span>{
-                    <span class="comment">// cuBLASLt batch matmul implementation requires inputs to be dims3
-                    </span><span class="kw">let </span>k = k.flatten(<span class="number">0</span>, <span class="number">1</span>)<span class="question-mark">?</span>;
-                    <span class="kw">let </span>q = q.flatten(<span class="number">0</span>, <span class="number">1</span>)<span class="question-mark">?</span>;
-                    <span class="kw">let </span>v = v.flatten(<span class="number">0</span>, <span class="number">1</span>)<span class="question-mark">?</span>;
-                    <span class="kw">let </span>attention_bias = mask.map(|mask| mask.flatten(<span class="number">0</span>, <span class="number">1</span>)).transpose()<span class="question-mark">?</span>;
-
-                    <span class="comment">// If attention_bias is set, we fuse the add by giving it as the output matrix
-                    // and setting beta to 1.0
-                    </span><span class="kw">let </span>beta = <span class="kw">match </span>attention_bias.is_some() {
-                        <span class="bool-val">true </span>=&gt; <span class="prelude-val">Some</span>(<span class="number">1.0</span>),
-                        <span class="bool-val">false </span>=&gt; <span class="prelude-val">None</span>,
-                    };
-
-                    <span class="comment">// Batch matrix multiplication
-                    // Fuse softmax scale and attention_bias add
-                    </span><span class="kw">let </span>attention_scores = cublaslt.batch_matmul(
-                        <span class="kw-2">&amp;</span>k,
-                        <span class="kw-2">&amp;</span>q,
-                        attention_bias.as_ref(),
-                        <span class="prelude-val">Some</span>((<span class="number">1.0 </span>/ (head_dim <span class="kw">as </span>f64).sqrt()) <span class="kw">as </span>f32),
-                        beta,
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                    )<span class="question-mark">?</span>;
-                    <span class="kw">let </span>attention_probs = candle_nn::ops::softmax_last_dim(<span class="kw-2">&amp;</span>attention_scores)<span class="question-mark">?</span>;
-
-                    <span class="kw">let </span>context_layer = cublaslt.batch_matmul(
-                        <span class="kw-2">&amp;</span>v.t()<span class="question-mark">?</span>.contiguous()<span class="question-mark">?</span>,
-                        <span class="kw-2">&amp;</span>attention_probs,
-                        <span class="comment">// We save one allocation
-                        </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>q),
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                    )<span class="question-mark">?</span>;
-
-                    <span class="comment">// Reshape to dims4
-                    </span>context_layer.reshape((b_sz, n_attn_heads, seq_len, head_dim))
-                }
-                <span class="attr">#[cfg(not(feature = <span class="string">"cuda"</span>))]
-                </span>{
-                    <span class="macro">candle_core::bail!</span>(<span class="string">"`cuda` feature is not enabled"</span>)
-                }
-            } <span class="kw">else </span>{
-                <span class="comment">// Use the f16 kernels here if quantized (ISQ or GGML), and a large enough prompt
-                </span>naive_sdpa(q, k, v, head_dim, mask)
-            }
+    <span class="doccomment">/// Compute quantized matrix-matrix product, optionally casting to f16 to use specialized GEMM kernels.
+    </span><span class="kw">pub fn </span>qmethod_matmul(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor, matmul: <span class="kw-2">&amp;</span><span class="kw">dyn </span>QuantMethod) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">if </span>get_use_matmul_via_f16() {
+            matmul.forward_via_half(x)
         } <span class="kw">else </span>{
-            naive_sdpa(q, k, v, head_dim, mask)
-        }
-    }
-}
-
-<span class="doccomment">/// Linear layer with fused bias matmul.
-</span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>FusedBiasLinear {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) w: Tensor,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) b: Tensor,
-}
-
-<span class="kw">impl </span>TryFrom&lt;Linear&gt; <span class="kw">for </span>FusedBiasLinear {
-    <span class="kw">type </span>Error = candle_core::Error;
-
-    <span class="kw">fn </span>try_from(x: Linear) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(bias) = x.bias() {
-            <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-                w: x.weight().clone(),
-                b: bias.clone(),
-            })
-        } <span class="kw">else </span>{
-            <span class="macro">candle_core::bail!</span>(<span class="string">"`FusedBiasLinear` expects a Linear layer with bias."</span>)
-        }
-    }
-}
-
-<span class="kw">impl </span>Module <span class="kw">for </span>FusedBiasLinear {
-    <span class="kw">fn </span>forward(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="kw-2">&amp;</span>Tensor) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
-        <span class="kw">let </span>w = <span class="kw">match </span><span class="kw-2">*</span>x.dims() {
-            [b1, b2, <span class="kw">_</span>, <span class="kw">_</span>] =&gt; <span class="self">self</span>.w.broadcast_left((b1, b2))<span class="question-mark">?</span>,
-            [bsize, <span class="kw">_</span>, <span class="kw">_</span>] =&gt; <span class="self">self</span>.w.broadcast_left(bsize)<span class="question-mark">?</span>,
-            <span class="kw">_ </span>=&gt; <span class="self">self</span>.w.clone(),
-        };
-        <span class="kw">let </span><span class="kw-2">mut </span>tgt_shape = x.dims().to_vec();
-        tgt_shape[x.dims().len() - <span class="number">1</span>] = w.dim(D::Minus2)<span class="question-mark">?</span>;
-        <span class="kw">let </span>b = <span class="self">self</span>.b.broadcast_as(Shape::from_dims(<span class="kw-2">&amp;</span>tgt_shape))<span class="question-mark">?</span>;
-
-        <span class="kw">if let </span>(Device::Cuda(<span class="kw">_</span>), <span class="prelude-val">Some</span>(cublaslt)) = (x.device(), <span class="kw-2">*</span>CUBLASLT_HANDLE.lock().unwrap()) {
-            cublaslt
-                .batch_matmul(
-                    x,
-                    <span class="kw-2">&amp;</span>w,
-                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>b.t()<span class="question-mark">?</span>.contiguous()<span class="question-mark">?</span>),
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">Some</span>(<span class="number">1.0</span>),
-                    <span class="prelude-val">None</span>,
-                    <span class="prelude-val">None</span>,
-                )<span class="question-mark">?
-                </span>.t()
-        } <span class="kw">else </span>{
-            x.matmul(<span class="kw-2">&amp;</span>w.t()<span class="question-mark">?</span>)<span class="question-mark">? </span>+ b
+            matmul.forward(x)
         }
     }
 }
@@ -1431,13 +1850,12 @@
 
 <span class="kw">impl </span>QLinear {
     <span class="kw">pub fn </span>new&lt;R: std::io::Read + std::io::Seek&gt;(
-        ct: <span class="kw-2">&amp;</span>gguf_file::Content,
-        r: <span class="kw-2">&amp;mut </span>R,
+        ct: <span class="kw-2">&amp;mut </span>Content&lt;<span class="lifetime">'_</span>, R&gt;,
         name: <span class="kw-2">&amp;</span>str,
         device: <span class="kw-2">&amp;</span>Device,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span>w = ct.tensor(r, <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{name}.weight"</span>), device)<span class="question-mark">?</span>;
-        <span class="kw">let </span>b = ct.tensor(r, <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{name}.bias"</span>), device)<span class="question-mark">?</span>;
+        <span class="kw">let </span>w = ct.tensor(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{name}.weight"</span>), device)<span class="question-mark">?</span>;
+        <span class="kw">let </span>b = ct.tensor(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{name}.bias"</span>), device)<span class="question-mark">?</span>;
         <span class="kw">let </span>inner = QMatMul::from_qtensor(w)<span class="question-mark">?</span>;
         <span class="kw">let </span>bias = b.dequantize(device)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
@@ -1580,78 +1998,122 @@
     }
 }
 
-<span class="kw">mod </span>tests {
+<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize, Default)]
+#[serde(rename_all = <span class="string">"lowercase"</span>)]
+</span><span class="kw">pub enum </span>Activation {
+    <span class="attr">#[default]
+    #[serde(alias = <span class="string">"gelu"</span>)]
+    </span>Gelu,
+    <span class="attr">#[serde(alias = <span class="string">"gelu_new"</span>)]
+    </span>NewGelu,
+    Relu,
+    Relu2,
+    Relu6,
+    Silu,
+    Sigmoid,
+    HardSigmoid,
+    Swiglu,
+    Swish,
+    HardSwish,
+    Elu(f64),
+    LeakyRelu(f64),
+    <span class="attr">#[serde(alias = <span class="string">"gelu_pytorch_tanh"</span>)]
+    </span>GeluPytorchTanh,
+    QuickGelu,
+}
 
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>fused_bias_linear() {
-        <span class="kw">use </span>candle_core::{DType, Device, IndexOp, Tensor};
-        <span class="kw">use </span>candle_nn::{Linear, Module};
+<span class="kw">impl </span>Module <span class="kw">for </span>Activation {
+    <span class="kw">fn </span>forward(<span class="kw-2">&amp;</span><span class="self">self</span>, xs: <span class="kw-2">&amp;</span>Tensor) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Gelu =&gt; xs.gelu_erf(),
+            <span class="comment">// https://github.com/huggingface/transformers/blob/12f043eaeaabfef6f6efea411d98e6f6d3c094b7/src/transformers/activations.py#L49-L78
+            </span><span class="self">Self</span>::NewGelu =&gt; xs.gelu(),
+            <span class="self">Self</span>::Relu =&gt; xs.relu(),
+            <span class="self">Self</span>::Relu2 =&gt; xs.relu()<span class="question-mark">?</span>.sqr(),
+            <span class="self">Self</span>::Relu6 =&gt; xs.clamp(<span class="number">0f32</span>, <span class="number">6f32</span>),
+            <span class="self">Self</span>::Silu =&gt; xs.silu(),
+            <span class="self">Self</span>::Sigmoid =&gt; candle_nn::ops::sigmoid(xs),
+            <span class="self">Self</span>::HardSigmoid =&gt; candle_nn::ops::hard_sigmoid(xs),
+            <span class="self">Self</span>::Swiglu =&gt; candle_nn::ops::swiglu(xs),
+            <span class="self">Self</span>::Swish =&gt; xs * candle_nn::ops::sigmoid(xs)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::HardSwish =&gt; xs * candle_nn::ops::hard_sigmoid(xs)<span class="question-mark">?</span>,
+            <span class="kw-2">&amp;</span><span class="self">Self</span>::Elu(alpha) =&gt; xs.elu(alpha),
+            <span class="kw-2">&amp;</span><span class="self">Self</span>::LeakyRelu(negative_slope) =&gt; candle_nn::ops::leaky_relu(xs, negative_slope),
+            <span class="self">Self</span>::GeluPytorchTanh =&gt; xs.gelu(),
+            <span class="self">Self</span>::QuickGelu =&gt; xs * candle_nn::ops::sigmoid(<span class="kw-2">&amp;</span>(xs * <span class="number">1.702f64</span>)<span class="question-mark">?</span>),
+        }
+    }
+}
 
-        <span class="kw">use </span><span class="kw">crate</span>::cublaslt::setup_cublas_lt_wrapper;
-        <span class="kw">use </span><span class="kw">crate</span>::layers::FusedBiasLinear;
+<span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+</span><span class="kw">pub struct </span>Conv3dConfig {
+    <span class="kw">pub </span>padding: usize,
+    <span class="kw">pub </span>stride: usize,
+    <span class="kw">pub </span>dilation: usize,
+    <span class="kw">pub </span>groups: usize,
+}
 
-        <span class="kw">const </span>IN: usize = <span class="number">1921</span>;
-        <span class="kw">const </span>OUT: usize = <span class="number">4096</span>;
-        <span class="kw">const </span>INNER: usize = <span class="number">1024</span>;
+<span class="kw">impl </span>Default <span class="kw">for </span>Conv3dConfig {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            padding: <span class="number">0</span>,
+            stride: <span class="number">1</span>,
+            dilation: <span class="number">1</span>,
+            groups: <span class="number">1</span>,
+        }
+    }
+}
 
-        <span class="kw">let </span>dev = Device::cuda_if_available(<span class="number">0</span>).unwrap();
-        setup_cublas_lt_wrapper();
+<span class="kw">pub struct </span>Conv3dNoBias {
+    conv2d_1: Conv2d,
+    conv2d_2: Conv2d,
+}
 
-        <span class="kw">let </span>inner_dtype = <span class="kw">if </span>dev.is_cuda() {
-            DType::BF16
-        } <span class="kw">else </span>{
-            DType::F32
+<span class="kw">impl </span>Conv3dNoBias {
+    <span class="kw">pub fn </span>new(
+        in_channels: usize,
+        out_channels: usize,
+        kernel_sizes: [usize; <span class="number">3</span>],
+        cfg: Conv3dConfig,
+        vb: VarBuilder,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>ws = vb.get(
+            (
+                out_channels,
+                in_channels / cfg.groups,
+                kernel_sizes[<span class="number">0</span>],
+                kernel_sizes[<span class="number">1</span>],
+                kernel_sizes[<span class="number">2</span>],
+            ),
+            <span class="string">"weight"</span>,
+        )<span class="question-mark">?</span>;
+
+        <span class="comment">// Split on temporal dimension
+        // https://github.com/pytorch/pytorch/issues/139066
+
+        </span><span class="kw">let </span>w1 = ws.i((.., .., <span class="number">0</span>, .., ..))<span class="question-mark">?</span>;
+        <span class="kw">let </span>w2 = ws.i((.., .., <span class="number">1</span>, .., ..))<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>cfg = Conv2dConfig {
+            padding: cfg.padding,
+            stride: cfg.stride,
+            dilation: cfg.dilation,
+            groups: cfg.groups,
         };
 
-        <span class="kw">let </span>w = Tensor::arange(<span class="number">0f32</span>, (OUT * IN) <span class="kw">as </span>f32, <span class="kw-2">&amp;</span>dev)
-            .unwrap()
-            .to_dtype(inner_dtype)
-            .unwrap()
-            .reshape((OUT, IN))
-            .unwrap();
-        <span class="kw">let </span>b = Tensor::arange(<span class="number">0f32</span>, OUT <span class="kw">as </span>f32, <span class="kw-2">&amp;</span>dev)
-            .unwrap()
-            .to_dtype(inner_dtype)
-            .unwrap()
-            .reshape((OUT,))
-            .unwrap();
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            conv2d_1: Conv2d::new(w1.contiguous()<span class="question-mark">?</span>, <span class="prelude-val">None</span>, cfg),
+            conv2d_2: Conv2d::new(w2.contiguous()<span class="question-mark">?</span>, <span class="prelude-val">None</span>, cfg),
+        })
+    }
+}
 
-        <span class="kw">let </span>xs = Tensor::arange(<span class="number">0f32</span>, (INNER * IN) <span class="kw">as </span>f32, <span class="kw-2">&amp;</span>dev)
-            .unwrap()
-            .to_dtype(inner_dtype)
-            .unwrap()
-            .reshape((<span class="number">1</span>, INNER, IN))
-            .unwrap();
+<span class="kw">impl </span>Module <span class="kw">for </span>Conv3dNoBias {
+    <span class="kw">fn </span>forward(<span class="kw-2">&amp;</span><span class="self">self</span>, xs: <span class="kw-2">&amp;</span>Tensor) -&gt; <span class="prelude-ty">Result</span>&lt;Tensor&gt; {
+        <span class="kw">let </span>xs1 = xs.i((.., .., <span class="number">0</span>, .., ..))<span class="question-mark">?</span>;
+        <span class="kw">let </span>xs2 = xs.i((.., .., <span class="number">1</span>, .., ..))<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>lin = Linear::new(w.clone(), <span class="prelude-val">Some</span>(b.clone()));
-        <span class="kw">let </span>truth_out = lin.forward(<span class="kw-2">&amp;</span>xs).unwrap();
-        <span class="kw">let </span>truth_y = truth_out
-            .to_dtype(DType::F32)
-            .unwrap()
-            .to_vec3::&lt;f32&gt;()
-            .unwrap();
-
-        <span class="kw">let </span>fused = FusedBiasLinear { w, b };
-        <span class="kw">let </span>fused_out = fused.forward(<span class="kw-2">&amp;</span>xs).unwrap();
-        <span class="kw">let </span>fused_y = fused_out
-            .to_dtype(DType::F32)
-            .unwrap()
-            .to_vec3::&lt;f32&gt;()
-            .unwrap();
-
-        <span class="macro">assert_eq!</span>(truth_out.shape(), fused_out.shape());
-        <span class="kw">if </span>truth_y != fused_y {
-            <span class="macro">panic!</span>(
-                <span class="string">"Truth does not match fused kernel. Diff fused - truth:\n{:#?}"</span>,
-                <span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>fused_out - <span class="kw-2">&amp;</span>truth_out)
-                    .unwrap()
-                    .i((<span class="number">0</span>, <span class="number">5</span>..<span class="number">10</span>, <span class="number">0</span>..<span class="number">5</span>))
-                    .unwrap()
-                    .to_dtype(DType::F32)
-                    .unwrap()
-                    .to_vec2::&lt;f32&gt;()
-            )
-        }
+        (<span class="self">self</span>.conv2d_1.forward(<span class="kw-2">&amp;</span>xs1)<span class="question-mark">? </span>+ <span class="self">self</span>.conv2d_2.forward(<span class="kw-2">&amp;</span>xs2)<span class="question-mark">?</span>)<span class="question-mark">?</span>.unsqueeze(<span class="number">2</span>)
     }
 }
 </code></pre></div></section></main></body></html>

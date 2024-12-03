@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/vision_models/llava/llava_next_inputs_processor.rs`."><title>llava_next_inputs_processor.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/vision_models/llava/llava_next_inputs_processor.rs`."><title>llava_next_inputs_processor.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/vision_models/llava/</div>llava_next_inputs_processor.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -374,8 +375,90 @@
 <a href="#374" id="374">374</a>
 <a href="#375" id="375">375</a>
 <a href="#376" id="376">376</a>
-</pre></div><pre class="rust"><code><span class="attr">#![allow(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a></pre></div><pre class="rust"><code><span class="attr">#![allow(clippy::cast_possible_truncation, clippy::cast_precision_loss)]
 </span><span class="kw">use </span>std::any::Any;
+<span class="kw">use </span>std::num::NonZeroUsize;
 <span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>candle_core::Result;
@@ -384,12 +467,14 @@
 <span class="kw">use </span>itertools::Itertools;
 <span class="kw">use </span>regex_automata::meta::Regex;
 <span class="kw">use </span>tokenizers::Tokenizer;
+<span class="kw">use </span>tracing::warn;
 
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::text_models_inputs_processor::{
     get_completion_input, get_prompt_input, PagedAttentionMeta,
 };
 <span class="kw">use </span><span class="kw">crate</span>::pipeline::{
-    text_models_inputs_processor, InputsProcessor, InputsProcessorType, MessagesAction, Processor,
+    text_models_inputs_processor, InputProcessorOutput, InputsProcessor, InputsProcessorType,
+    MessagesAction, Processor,
 };
 <span class="kw">use </span><span class="kw">crate</span>::sequence::Sequence;
 <span class="kw">use </span><span class="kw">crate</span>::vision_models::image_processor::{<span class="self">self</span>, ImagePreProcessor, PreprocessedImages};
@@ -456,22 +541,37 @@
     }
     <span class="kw">fn </span>process_inputs(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        tokenizer: Arc&lt;Tokenizer&gt;,
+        tokenizer: <span class="prelude-ty">Option</span>&lt;Arc&lt;Tokenizer&gt;&gt;,
         input_seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
         is_prompt: bool,
         is_xlora: bool,
         device: <span class="kw-2">&amp;</span>Device,
         no_kv_cache: bool,
         last_n_context_len: <span class="prelude-ty">Option</span>&lt;(usize, usize)&gt;,
+        return_raw_logits: bool,
         other_config: <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>Any&gt;&gt;,
         <span class="kw-2">mut </span>paged_attn_metadata: <span class="prelude-ty">Option</span>&lt;PagedAttentionMeta&lt;<span class="lifetime">'_</span>&gt;&gt;,
-    ) -&gt; anyhow::Result&lt;Box&lt;<span class="kw">dyn </span>Any&gt;&gt; {
+        prompt_batchsize: <span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;,
+    ) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = anyhow::Result&lt;InputProcessorOutput&gt;&gt;&gt; {
         <span class="kw">if </span>is_xlora {
-            <span class="macro">anyhow::bail!</span>(<span class="string">"Cannot make inputs for X-LoRA vision model."</span>);
+            <span class="kw">return </span>Box::new(std::iter::once(<span class="prelude-val">Err</span>(anyhow::Error::msg(
+                <span class="string">"Cannot make inputs for X-LoRA vision model."</span>,
+            ))));
         }
         <span class="kw">if </span>no_kv_cache {
-            <span class="macro">anyhow::bail!</span>(<span class="string">"Vision model must have kv cache."</span>);
+            <span class="kw">return </span>Box::new(std::iter::once(<span class="prelude-val">Err</span>(anyhow::Error::msg(
+                <span class="string">"Vision model must have kv cache."</span>,
+            ))));
         }
+        <span class="comment">// TODO(EricLBuehler): support this? Would require some handling of image tokens.
+        </span><span class="kw">if </span>prompt_batchsize.is_some() {
+            <span class="macro">warn!</span>(<span class="string">"`prompt_batchsize` is set. Idefics 2 does not support prompt batching."</span>);
+        }
+        <span class="kw">let </span><span class="prelude-val">Some</span>(tokenizer) = tokenizer <span class="kw">else </span>{
+            <span class="kw">return </span>Box::new(std::iter::once(<span class="prelude-val">Err</span>(anyhow::Error::msg(
+                <span class="string">"LLaVAInputProcessor requires a specified tokenizer."</span>,
+            ))));
+        };
 
         <span class="kw">let </span>config = other_config
             .clone()
@@ -481,12 +581,12 @@
             <span class="kw-2">*</span>config.crop_size.as_ref().unwrap().get(<span class="string">"width"</span>).unwrap(),
             <span class="kw-2">*</span>config.crop_size.as_ref().unwrap().get(<span class="string">"height"</span>).unwrap(),
         );
-        <span class="kw">let </span>(pixel_values, image_sizes, num_img_tokens, num_image_samples) = <span class="kw">if </span>is_prompt
-            &amp;&amp; input_seqs
-                .iter()
-                .map(|seq| seq.images().is_some())
-                .all(|x| x)
-        {
+
+        <span class="kw">let </span>has_images = input_seqs
+            .iter()
+            .all(|seq| seq.images().is_some_and(|images| !images.is_empty()));
+
+        <span class="kw">let </span>(pixel_values, image_sizes, num_img_tokens, num_image_samples) = <span class="kw">if </span>has_images {
             <span class="kw">let </span><span class="kw-2">mut </span>pixel_values_accum = Vec::new();
             <span class="kw">let </span><span class="kw-2">mut </span>image_sizes_accum = Vec::new();
             <span class="kw">let </span><span class="kw-2">mut </span>num_img_tokens_accum = Vec::new();
@@ -500,7 +600,22 @@
                     pixel_attention_mask: <span class="kw">_</span>,
                     image_sizes,
                     num_img_tokens,
-                } = <span class="self">self</span>.preprocess(imgs.clone(), config, device)<span class="question-mark">?</span>;
+                    aspect_ratio_ids: <span class="kw">_</span>,
+                    aspect_ratio_mask: <span class="kw">_</span>,
+                    num_tiles: <span class="kw">_</span>,
+                    image_grid_thw: <span class="kw">_</span>,
+                    video_grid_thw: <span class="kw">_</span>,
+                    rows: <span class="kw">_</span>,
+                    cols: <span class="kw">_</span>,
+                } = <span class="self">self
+                    </span>.preprocess(
+                        imgs.clone(),
+                        <span class="macro">vec!</span>[],
+                        config,
+                        device,
+                        (usize::MAX, usize::MAX),
+                    )
+                    .expect(<span class="string">"Preprocessor failed"</span>);
                 <span class="kw">let </span>image_sizes = image_sizes.unwrap();
                 pixel_values_accum.push(pixel_values);
                 image_sizes_accum.push(image_sizes);
@@ -516,50 +631,70 @@
                 num_image_samples_accum.push(num_img_samples);
             }
             (
-                <span class="prelude-val">Some</span>(Tensor::cat(<span class="kw-2">&amp;</span>pixel_values_accum, <span class="number">0</span>)<span class="question-mark">?</span>),
+                <span class="prelude-val">Some</span>(Tensor::cat(<span class="kw-2">&amp;</span>pixel_values_accum, <span class="number">0</span>).unwrap()),
                 <span class="prelude-val">Some</span>(image_sizes_accum),
                 <span class="prelude-val">Some</span>(num_img_tokens_accum),
                 <span class="prelude-val">Some</span>(num_image_samples_accum),
             )
         } <span class="kw">else </span>{
-            <span class="kw">let </span>text_models_inputs_processor::ModelInputs {
-                input_ids,
-                input_ids_full: <span class="kw">_</span>,
-                seqlen_offsets,
-                seqlen_offsets_full: <span class="kw">_</span>,
-                seqlen_offsets_kernel,
-                seqlen_offsets_kernel_full: <span class="kw">_</span>,
-                context_lens,
-                position_ids,
-                paged_attn_meta,
-            } = <span class="kw-2">*</span>text_models_inputs_processor::TextInputsProcessor
-                .process_inputs(
-                    tokenizer,
-                    input_seqs,
-                    is_prompt,
-                    is_xlora,
-                    device,
-                    no_kv_cache,
-                    last_n_context_len,
-                    other_config,
-                    paged_attn_metadata,
-                )<span class="question-mark">?
-                </span>.downcast::&lt;text_models_inputs_processor::ModelInputs&gt;()
-                .expect(<span class="string">"Downcast failed."</span>);
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Box::new(ModelInputs {
-                input_ids,
-                seqlen_offsets,
-                seqlen_offsets_kernel,
-                context_lens,
-                position_ids,
-                pixel_values: <span class="prelude-val">None</span>,
-                model_specific_args: Box::new(LLaVANextVisionSpecificArgs {
-                    image_sizes: <span class="prelude-val">None</span>,
-                    num_image_tokens: <span class="prelude-val">None</span>,
-                    num_image_samples: <span class="prelude-val">None</span>,
-                }),
-                paged_attn_meta,
-            }));
+            <span class="kw">return </span>Box::new(
+                text_models_inputs_processor::TextInputsProcessor
+                    .process_inputs(
+                        <span class="prelude-val">Some</span>(tokenizer),
+                        input_seqs,
+                        is_prompt,
+                        is_xlora,
+                        device,
+                        no_kv_cache,
+                        last_n_context_len,
+                        return_raw_logits,
+                        other_config,
+                        paged_attn_metadata,
+                        <span class="prelude-val">None</span>, <span class="comment">// TODO
+                    </span>)
+                    .map(|metadata| {
+                        <span class="kw">let </span>InputProcessorOutput {
+                            inputs,
+                            seq_indices,
+                        } = metadata<span class="question-mark">?</span>;
+
+                        <span class="kw">let </span>text_models_inputs_processor::ModelInputs {
+                            input_ids,
+                            input_ids_full: <span class="kw">_</span>,
+                            seqlen_offsets,
+                            seqlen_offsets_full: <span class="kw">_</span>,
+                            seqlen_offsets_kernel,
+                            seqlen_offsets_kernel_full: <span class="kw">_</span>,
+                            context_lens,
+                            position_ids,
+                            paged_attn_meta,
+                            flash_meta,
+                            flash_meta_full: <span class="kw">_</span>,
+                        } = <span class="kw-2">*</span>inputs
+                            .downcast::&lt;text_models_inputs_processor::ModelInputs&gt;()
+                            .expect(<span class="string">"Downcast failed."</span>);
+
+                        <span class="kw">let </span>inputs: Box&lt;<span class="kw">dyn </span>Any&gt; = Box::new(ModelInputs {
+                            input_ids,
+                            seqlen_offsets,
+                            seqlen_offsets_kernel,
+                            context_lens,
+                            position_ids,
+                            pixel_values: <span class="prelude-val">None</span>,
+                            model_specific_args: Box::new(LLaVANextVisionSpecificArgs {
+                                image_sizes: <span class="prelude-val">None</span>,
+                                num_image_tokens: <span class="prelude-val">None</span>,
+                                num_image_samples: <span class="prelude-val">None</span>,
+                            }),
+                            paged_attn_meta,
+                            flash_meta,
+                        });
+                        <span class="prelude-val">Ok</span>(InputProcessorOutput {
+                            inputs,
+                            seq_indices,
+                        })
+                    }),
+            );
         };
 
         <span class="kw">let </span>num_image_tokens_flat = num_img_tokens
@@ -585,7 +720,7 @@
                     .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
                 <span class="bool-val">false</span>,
             )
-            .map_err(anyhow::Error::msg)<span class="question-mark">?</span>;
+            .expect(<span class="string">"Decode failed"</span>);
 
         <span class="kw">for </span>(detokenized, (seq, num_img_tokens)) <span class="kw">in </span>detokenized.into_iter().zip(
             input_seqs
@@ -641,44 +776,62 @@
             toks.push(input_ids);
         }
 
-        <span class="kw">let </span>text_models_inputs_processor::InputMetadata {
-            input,
-            positions,
-            positions_kernel,
-            context_lens,
-            position_ids,
-            paged_attn_meta,
-        } = <span class="kw">if </span>is_prompt {
+        <span class="kw">let </span>iter = <span class="kw">if </span>is_prompt {
             get_prompt_input(
                 toks,
                 input_seqs,
                 device,
                 last_n_context_len,
+                return_raw_logits,
                 paged_attn_metadata.as_mut(),
-            )<span class="question-mark">?
-        </span>} <span class="kw">else </span>{
+                <span class="prelude-val">None</span>, <span class="comment">// TODO: evaluate if it is possible to batch this
+            </span>)
+        } <span class="kw">else </span>{
             get_completion_input(
                 toks,
                 input_seqs,
                 device,
                 no_kv_cache,
                 last_n_context_len,
+                return_raw_logits,
                 paged_attn_metadata.as_mut(),
-            )<span class="question-mark">?
-        </span>};
-        <span class="prelude-val">Ok</span>(Box::new(ModelInputs {
-            input_ids: input,
-            seqlen_offsets: positions,
-            seqlen_offsets_kernel: positions_kernel,
-            context_lens,
-            position_ids,
-            pixel_values,
-            model_specific_args: Box::new(LLaVANextVisionSpecificArgs {
-                image_sizes,
-                num_image_tokens: <span class="prelude-val">Some</span>(num_image_tokens_flat),
-                num_image_samples: <span class="prelude-val">Some</span>(num_image_samples),
-            }),
-            paged_attn_meta,
+                <span class="prelude-val">None</span>, <span class="comment">// TODO: evaluate if it is possible to batch this
+            </span>)
+        };
+
+        Box::new(iter.into_iter().map(<span class="kw">move </span>|metadata| {
+            <span class="kw">let </span>text_models_inputs_processor::InnerInputProcessorOutput {
+                inputs:
+                    text_models_inputs_processor::InputMetadata {
+                        input,
+                        positions,
+                        positions_kernel,
+                        context_lens,
+                        position_ids,
+                        paged_attn_meta,
+                        flash_meta,
+                    },
+                seq_indices,
+            } = metadata<span class="question-mark">?</span>;
+            <span class="kw">let </span>inputs: Box&lt;<span class="kw">dyn </span>Any&gt; = Box::new(ModelInputs {
+                input_ids: input,
+                seqlen_offsets: positions,
+                seqlen_offsets_kernel: positions_kernel,
+                context_lens,
+                position_ids,
+                pixel_values: pixel_values.clone(),
+                model_specific_args: Box::new(LLaVANextVisionSpecificArgs {
+                    image_sizes: image_sizes.clone(),
+                    num_image_tokens: <span class="prelude-val">Some</span>(num_image_tokens_flat.clone()),
+                    num_image_samples: <span class="prelude-val">Some</span>(num_image_samples.clone()),
+                }),
+                paged_attn_meta,
+                flash_meta,
+            });
+            <span class="prelude-val">Ok</span>(InputProcessorOutput {
+                inputs,
+                seq_indices,
+            })
         }))
     }
 }
@@ -691,12 +844,16 @@
     <span class="kw">fn </span>preprocess(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         images: Vec&lt;image::DynamicImage&gt;,
+        videos: Vec&lt;Vec&lt;image::DynamicImage&gt;&gt;,
         config: <span class="kw-2">&amp;</span>preprocessor_config::PreProcessorConfig,
         device: <span class="kw-2">&amp;</span>candle_core::Device,
+        (<span class="kw">_</span>, <span class="kw">_</span>): (usize, usize),
     ) -&gt; candle_core::Result&lt;image_processor::PreprocessedImages&gt; {
         <span class="kw">if </span>images.len() &gt; <span class="number">1 </span>{
             <span class="macro">candle_core::bail!</span>(<span class="string">"Can only process one image per batch"</span>); <span class="comment">// This is no different from phi3_input_processor
         </span>};
+        <span class="macro">assert!</span>(videos.is_empty());
+
         <span class="kw">let </span>resized_size = <span class="kw-2">*</span>config.size.as_ref().unwrap().get(<span class="string">"shortest_edge"</span>).unwrap() <span class="kw">as </span>usize;
         <span class="kw">let </span>image = images[<span class="number">0</span>].clone();
         <span class="kw">let </span>original_size = image.dimensions();
@@ -747,6 +904,13 @@
             pixel_attention_mask: <span class="prelude-val">None</span>,
             image_sizes: <span class="prelude-val">Some</span>((original_size.<span class="number">0 </span><span class="kw">as </span>usize, original_size.<span class="number">1 </span><span class="kw">as </span>usize)),
             num_img_tokens: <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="self">self</span>.get_num_image_tokens(original_size)]),
+            aspect_ratio_ids: <span class="prelude-val">None</span>,
+            aspect_ratio_mask: <span class="prelude-val">None</span>,
+            num_tiles: <span class="prelude-val">None</span>,
+            image_grid_thw: <span class="prelude-val">None</span>,
+            video_grid_thw: <span class="prelude-val">None</span>,
+            rows: <span class="prelude-val">None</span>,
+            cols: <span class="prelude-val">None</span>,
         })
     }
 }

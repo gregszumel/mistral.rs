@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/paths.rs`."><title>paths.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/paths.rs`."><title>paths.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/pipeline/</div>paths.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -495,13 +496,54 @@
 <a href="#495" id="495">495</a>
 <a href="#496" id="496">496</a>
 <a href="#497" id="497">497</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>std::{
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::{
     collections::HashMap,
     fs,
     path::{Path, PathBuf},
 };
 
 <span class="kw">use </span>anyhow::Result;
+<span class="kw">use </span>either::Either;
 <span class="kw">use </span>hf_hub::{
     api::sync::{ApiBuilder, ApiRepo},
     Repo, RepoType,
@@ -511,13 +553,21 @@
 <span class="kw">use </span>tracing::{info, warn};
 
 <span class="kw">use crate</span>::{
-    api_dir_list, api_get_file, lora::LoraConfig, pipeline::chat_template::ChatTemplate,
-    utils::tokens::get_token, xlora_models::XLoraConfig, ModelPaths, Ordering, TokenSource,
+    api_dir_list, api_get_file,
+    lora::LoraConfig,
+    pipeline::{
+        chat_template::{ChatTemplate, ChatTemplateValue},
+        isq::UQFF_RESIDUAL_SAFETENSORS,
+    },
+    utils::tokens::get_token,
+    xlora_models::XLoraConfig,
+    ModelPaths, Ordering, TokenSource,
 };
 
 <span class="comment">// Match files against these, avoids situations like `consolidated.safetensors`
-</span><span class="kw">const </span>SAFETENSOR_MATCH: <span class="kw-2">&amp;</span>str = <span class="string">r"model-\d{5}-of-\d{5}"</span>;
-<span class="kw">const </span>PICKLE_MATCH: <span class="kw-2">&amp;</span>str = <span class="string">r"pytorch_model-\d{5}-of-\d{5}"</span>;
+</span><span class="kw">const </span>SAFETENSOR_MATCH: <span class="kw-2">&amp;</span>str = <span class="string">r"model-\d{5}-of-\d{5}.safetensors\b"</span>;
+<span class="kw">const </span>QUANT_SAFETENSOR_MATCH: <span class="kw-2">&amp;</span>str = <span class="string">r"model.safetensors\b"</span>;
+<span class="kw">const </span>PICKLE_MATCH: <span class="kw-2">&amp;</span>str = <span class="string">r"pytorch_model-\d{5}-of-\d{5}.((pth)|(pt)|(bin))\b"</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>XLoraPaths {
     <span class="kw">pub </span>adapter_configs: <span class="prelude-ty">Option</span>&lt;Vec&lt;((String, String), LoraConfig)&gt;&gt;,
@@ -753,6 +803,7 @@
     quantized_filename: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     api: <span class="kw-2">&amp;</span>ApiRepo,
     model_id: <span class="kw-2">&amp;</span>Path,
+    loading_from_uqff: bool,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;PathBuf&gt;&gt; {
     <span class="kw">match </span><span class="kw-2">&amp;</span>quantized_filename {
         <span class="prelude-val">Some</span>(names) =&gt; {
@@ -777,11 +828,16 @@
         <span class="prelude-val">None </span>=&gt; {
             <span class="comment">// We only match these patterns for model names
             </span><span class="kw">let </span>safetensor_match = Regex::new(SAFETENSOR_MATCH)<span class="question-mark">?</span>;
+            <span class="kw">let </span>quant_safetensor_match = Regex::new(QUANT_SAFETENSOR_MATCH)<span class="question-mark">?</span>;
             <span class="kw">let </span>pickle_match = Regex::new(PICKLE_MATCH)<span class="question-mark">?</span>;
 
             <span class="kw">let </span><span class="kw-2">mut </span>filenames = <span class="macro">vec!</span>[];
-            <span class="kw">let </span>listing = <span class="macro">api_dir_list!</span>(api, model_id)
-                .filter(|x| safetensor_match.is_match(x) || pickle_match.is_match(x));
+            <span class="kw">let </span>listing = <span class="macro">api_dir_list!</span>(api, model_id).filter(|x| {
+                safetensor_match.is_match(x)
+                    || pickle_match.is_match(x)
+                    || quant_safetensor_match.is_match(x)
+                    || x == UQFF_RESIDUAL_SAFETENSORS
+            });
             <span class="kw">let </span>safetensors = listing
                 .clone()
                 .filter(|x| x.ends_with(<span class="string">".safetensors"</span>))
@@ -790,12 +846,18 @@
                 .clone()
                 .filter(|x| x.ends_with(<span class="string">".pth"</span>) || x.ends_with(<span class="string">".pt"</span>) || x.ends_with(<span class="string">".bin"</span>))
                 .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>uqff_residual = listing
+                .clone()
+                .filter(|x| x == UQFF_RESIDUAL_SAFETENSORS)
+                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
             <span class="kw">let </span>files = <span class="kw">if </span>!safetensors.is_empty() {
                 <span class="comment">// Always prefer safetensors
                 </span>safetensors
             } <span class="kw">else if </span>!pickles.is_empty() {
                 <span class="comment">// Fall back to pickle
                 </span>pickles
+            } <span class="kw">else if </span>!uqff_residual.is_empty() &amp;&amp; loading_from_uqff {
+                uqff_residual
             } <span class="kw">else </span>{
                 <span class="macro">anyhow::bail!</span>(<span class="string">"Expected file with extension one of .safetensors, .pth, .pt, .bin."</span>);
             };
@@ -822,9 +884,13 @@
 /// - `chat_template_ovrd` (GGUF chat template content) causes the usage of that string chat template initially.
 ///   Falls back to `chat_template_file` if it is invalid. *The user must add the bos/unk/eos tokens manually if this
 ///   is used.*
+///
+/// After this, if the `chat_template_json` filename is specified (a json with one field: "chat_template"),
+///  the chat template is overwritten with this chat template.
 </span><span class="attr">#[allow(clippy::borrowed_box)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_chat_template(
     paths: <span class="kw-2">&amp;</span>Box&lt;<span class="kw">dyn </span>ModelPaths&gt;,
+    chat_template_json: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     chat_template_fallback: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     chat_template_ovrd: <span class="prelude-ty">Option</span>&lt;String&gt;,
 ) -&gt; ChatTemplate {
@@ -859,11 +925,25 @@
             <span class="comment">// In this case the override chat template is being used. The user must add the bos/eos/unk toks themselves.
             </span><span class="macro">info!</span>(<span class="string">"Using literal chat template."</span>);
             <span class="kw">let </span><span class="kw-2">mut </span>template = ChatTemplate::default();
-            template.chat_template = <span class="prelude-val">Some</span>(chat_template);
+            template.chat_template = <span class="prelude-val">Some</span>(ChatTemplateValue(Either::Left(chat_template)));
             template
         }
         <span class="prelude-val">None </span>=&gt; serde_json::from_str(<span class="kw-2">&amp;</span>template_content.as_ref().unwrap().clone()).unwrap(),
     };
+    <span class="comment">// Overwrite to use any present `chat_template.json`
+    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(ChatTemplateValue(chat_template_value)) = <span class="kw-2">&amp;mut </span>template.chat_template {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(chat_template_json) = chat_template_json {
+            <span class="attr">#[derive(Debug, serde::Deserialize)]
+            </span><span class="kw">struct </span>AutomaticTemplate {
+                chat_template: String,
+            }
+            <span class="kw">let </span>deser: AutomaticTemplate = serde_json::from_str(
+                <span class="kw-2">&amp;</span>fs::read_to_string(chat_template_json).expect(<span class="string">"Loading chat template failed."</span>),
+            )
+            .unwrap();
+            <span class="kw-2">*</span>chat_template_value = Either::Left(deser.chat_template);
+        }
+    }
 
     <span class="kw">let </span>processor_conf: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::vision_models::processor_config::ProcessorConfig&gt; = paths
         .get_processor_config()
@@ -871,7 +951,9 @@
         .map(|f| serde_json::from_str(<span class="kw-2">&amp;</span>fs::read_to_string(f).unwrap()).unwrap());
     <span class="kw">if let </span><span class="prelude-val">Some</span>(processor_conf) = processor_conf {
         <span class="kw">if </span>processor_conf.chat_template.is_some() {
-            template.chat_template = processor_conf.chat_template;
+            template.chat_template = processor_conf
+                .chat_template
+                .map(|x| ChatTemplateValue(Either::Left(x)));
         }
     }
 

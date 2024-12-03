@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/sampling.rs`."><title>sampling.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mistralrs-core/src/pipeline/sampling.rs`."><title>sampling.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="mistralrs_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">mistralrs_core/pipeline/</div>sampling.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -400,14 +401,35 @@
 <a href="#400" id="400">400</a>
 <a href="#401" id="401">401</a>
 <a href="#402" id="402">402</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>std::sync::Arc;
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>candle_core::{DType, Device, <span class="prelude-ty">Result</span>, Tensor};
 <span class="kw">use </span>rand_isaac::Isaac64Rng;
 
 <span class="kw">use crate</span>::{
-    aici::toktree::TokTrie,
-    get_bias_if_not_allowed,
     prefix_cacher::PrefixCacheManager,
     sampler::Logprobs,
     sequence::{Sequence, SequenceRecognizer},
@@ -426,7 +448,15 @@
     <span class="kw">let </span>is_done = seq.is_done(logprobs.token, eos_tok, this.get_metadata().max_seq_len);
     seq.add_token(
         logprobs.clone(),
-        this.get_metadata().tok_trie.decode(<span class="kw-2">&amp;</span>[logprobs.token]),
+        this.get_metadata()
+            .tok_env
+            .as_ref()
+            .ok_or(candle_core::Error::Msg(
+                <span class="string">"`finish_or_add_toks_to_seq` requires the pipeline to have a token trie"
+                    </span>.to_string(),
+            ))<span class="question-mark">?
+            </span>.tok_trie()
+            .decode(<span class="kw-2">&amp;</span>[logprobs.token]),
         <span class="kw-2">&amp;</span>is_done,
     );
     <span class="comment">// Handle streaming requests
@@ -449,7 +479,7 @@
                         logprobs: <span class="kw">if </span>seq.return_logprobs() {
                             <span class="prelude-val">Some</span>(<span class="kw">crate</span>::ResponseLogprob {
                                 token: delta,
-                                bytes: logprobs.bytes.clone().into_bytes(),
+                                bytes: logprobs.bytes.clone().map(|b| b.into_bytes()),
                                 logprob: logprobs.logprob,
                                 top_logprobs: logprobs.top_logprobs.unwrap().clone(),
                             })
@@ -466,7 +496,7 @@
                             logprobs: <span class="kw">if </span>seq.return_logprobs() {
                                 <span class="prelude-val">Some</span>(<span class="kw">crate</span>::ResponseLogprob {
                                     token: delta,
-                                    bytes: logprobs.bytes.clone().into_bytes(),
+                                    bytes: logprobs.bytes.clone().map(|b| b.into_bytes()),
                                     logprob: logprobs.logprob,
                                     top_logprobs: logprobs.top_logprobs.unwrap().clone(),
                                 })
@@ -519,10 +549,15 @@
                 <span class="kw">for </span>logprob <span class="kw">in </span>seq.logprobs() {
                     <span class="kw">let </span>resp_logprob = <span class="kw">crate</span>::ResponseLogprob {
                         token: <span class="macro">crate::handle_seq_error_ok!</span>(
-                            tokenizer.decode(<span class="kw-2">&amp;</span>[logprob.token], <span class="bool-val">false</span>),
+                            tokenizer
+                            .as_ref()
+                            .ok_or(candle_core::Error::Msg(
+                                <span class="string">"`finish_or_add_toks_to_seq` requires the pipeline to have a tokenizer"
+                                    </span>.to_string(),
+                            ))<span class="question-mark">?</span>.decode(<span class="kw-2">&amp;</span>[logprob.token], <span class="bool-val">false</span>),
                             seq.responder()
                         ),
-                        bytes: logprob.bytes.clone().into_bytes(),
+                        bytes: logprob.bytes.clone().map(|b| b.into_bytes()),
                         logprob: logprob.logprob,
                         top_logprobs: logprob.top_logprobs.clone().unwrap(),
                     };
@@ -550,15 +585,28 @@
                     <span class="kw">let </span>txt = String::from_utf8_lossy(seq.completion_bytes());
                     txt[..completion_bytes_pos].trim_start().to_string()
                 }
+                <span class="kw">crate</span>::sequence::StopReason::GeneratedImage =&gt; {
+                    <span class="macro">candle_core::bail!</span>(<span class="string">"Stop reason was `GeneratedImage`."</span>)
+                }
             };
 
             <span class="kw">if </span>seq.get_mut_group().is_chat {
+                <span class="kw">let </span><span class="kw-2">mut </span>tool_calls = Vec::new();
+                <span class="kw">let </span><span class="kw-2">mut </span>text_new = <span class="prelude-val">Some</span>(text.clone());
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>matcher) = seq.tools {
+                    <span class="kw">let </span>calls = matcher.get_call(<span class="kw-2">&amp;</span>text).map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
+                    <span class="kw">if </span>!calls.is_empty() {
+                        text_new = <span class="prelude-val">None</span>;
+                    }
+                    tool_calls = calls;
+                }
                 <span class="kw">let </span>choice = <span class="kw">crate</span>::Choice {
                     finish_reason: reason.to_string(),
                     index: seq.get_response_index(),
                     message: <span class="kw">crate</span>::ResponseMessage {
-                        content: text,
+                        content: text_new,
                         role: <span class="string">"assistant"</span>.to_string(),
+                        tool_calls,
                     },
                     logprobs: logprobs.map(|l| <span class="kw">crate</span>::Logprobs { content: <span class="prelude-val">Some</span>(l) }),
                 };
@@ -622,13 +670,12 @@
 <span class="kw">pub async fn </span>sample_and_add_toks(
     this: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Pipeline,
     seqs: <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>Sequence],
-    logits: Tensor,
+    logits_seq: Vec&lt;Tensor&gt;,
     prefix_cacher: <span class="kw-2">&amp;mut </span>PrefixCacheManager,
     disable_eos_stop: bool,
     rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">let </span>seqs_len = seqs.len();
-    <span class="kw">let </span>logits_seq = logits.to_device(<span class="kw-2">&amp;</span>Device::Cpu)<span class="question-mark">?</span>.chunk(seqs_len, <span class="number">0</span>)<span class="question-mark">?</span>;
     <span class="macro">debug_assert_eq!</span>(logits_seq.len(), seqs_len);
 
     <span class="kw">let </span>use_async_pool = seqs_len &gt; <span class="number">1</span>;
@@ -640,8 +687,6 @@
                 logits_per_seq,
                 seq,
                 return_logprobs,
-                this.get_metadata().repeat_last_n,
-                this.get_metadata().tok_trie.clone(),
                 rng.clone(),
                 use_async_pool,
                 <span class="bool-val">true</span>, <span class="comment">// Append result to trie
@@ -673,25 +718,22 @@
     logits: Tensor,
     seq: <span class="kw-2">&amp;mut </span>Sequence,
     return_logprobs: bool,
-    repeat_last_n: usize,
-    tok_trie: Arc&lt;TokTrie&gt;,
     rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
     use_async_pool: bool,
     add_to_trie: bool,
     sample_speculative: bool,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Logprobs&gt; {
     <span class="kw">let </span>logits = logits.squeeze(<span class="number">0</span>)<span class="question-mark">?</span>.squeeze(<span class="number">0</span>)<span class="question-mark">?</span>.to_dtype(DType::F32)<span class="question-mark">?</span>;
-    <span class="kw">let </span>start_at = seq.get_toks().len().saturating_sub(repeat_last_n);
 
     <span class="kw">let </span>sampler = seq.sampler();
-    <span class="kw">let </span>ctx_clone = seq.get_toks()[start_at..].to_vec();
+    <span class="kw">let </span>ctx_clone = seq.get_toks().to_vec();
     <span class="kw">let </span>rng_clone = rng.clone();
     <span class="kw">let </span>logits_clone = logits.clone();
     <span class="kw">let </span>first_lobprobs_response = <span class="kw">if </span>use_async_pool {
         tokio_rayon::spawn(<span class="kw">move </span>|| {
             sampler.sample(
                 logits_clone,
-                <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ctx_clone),
+                <span class="kw-2">&amp;</span>ctx_clone,
                 return_logprobs,
                 rng_clone,
                 sample_speculative,
@@ -701,7 +743,7 @@
     </span>} <span class="kw">else </span>{
         sampler.sample(
             logits_clone,
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ctx_clone),
+            <span class="kw-2">&amp;</span>ctx_clone,
             return_logprobs,
             rng_clone,
             sample_speculative,
@@ -709,28 +751,44 @@
     </span>};
 
     <span class="kw">let </span>bias_if_not_allowed = <span class="kw">match </span><span class="kw-2">&amp;mut </span>seq.recognizer {
-        SequenceRecognizer::Regex(<span class="kw-2">ref mut </span>rx) =&gt; {
-            <span class="macro">get_bias_if_not_allowed!</span>(tok_trie, rx.as_mut(), first_lobprobs_response.token)
-        }
-        SequenceRecognizer::Cfg(<span class="kw-2">ref mut </span>cfg) =&gt; {
-            <span class="macro">get_bias_if_not_allowed!</span>(tok_trie, cfg.as_mut(), first_lobprobs_response.token)
+        SequenceRecognizer::Llguidance(<span class="kw-2">ref mut </span>llg) =&gt; {
+            <span class="kw">let </span>step_res = llg.compute_mask().map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(mask) = <span class="kw-2">&amp;</span>step_res.sample_mask {
+                <span class="kw">if </span>mask.is_allowed(first_lobprobs_response.token) {
+                    <span class="prelude-val">None
+                </span>} <span class="kw">else </span>{
+                    <span class="kw">let </span><span class="kw-2">mut </span>acc = <span class="macro">vec!</span>[-f32::INFINITY; logits.shape().dims1().unwrap()];
+                    mask.iter_set_entries(|idx| {
+                        <span class="kw">if </span>idx &lt; acc.len() {
+                            acc[idx] = <span class="number">0.0</span>;
+                        }
+                    });
+
+                    <span class="prelude-val">Some</span>(acc)
+                }
+            } <span class="kw">else if </span>step_res.is_stop() {
+                <span class="kw">let </span><span class="kw-2">mut </span>acc = <span class="macro">vec!</span>[-f32::INFINITY; logits.shape().dims1().unwrap()];
+                <span class="kw">let </span>trie = llg.tok_trie();
+                acc[trie.eos_token() <span class="kw">as </span>usize] = <span class="number">0.0</span>;
+                <span class="prelude-val">Some</span>(acc)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
         SequenceRecognizer::None =&gt; <span class="prelude-val">None</span>,
     };
     <span class="kw">let </span>second_logprobs_response = <span class="kw">match </span>bias_if_not_allowed {
-        <span class="prelude-val">Some</span>(token_set) =&gt; {
-            <span class="kw">let </span><span class="kw-2">mut </span>acc = <span class="macro">vec!</span>[-f32::INFINITY; tok_trie.vocab_size()];
-            token_set.apply_to(<span class="kw-2">&amp;mut </span>acc);
+        <span class="prelude-val">Some</span>(acc) =&gt; {
             <span class="kw">let </span>new_logits = (logits + Tensor::from_slice(<span class="kw-2">&amp;</span>acc, acc.len(), <span class="kw-2">&amp;</span>Device::Cpu)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>ctx_clone = seq.get_toks()[start_at..].to_vec();
+            <span class="kw">let </span>ctx_clone = seq.get_toks().to_vec();
             <span class="kw">let </span>rng_clone = rng.clone();
             <span class="kw">let </span>sampler = seq.sampler();
             <span class="kw">if </span>use_async_pool {
                 tokio_rayon::spawn(<span class="kw">move </span>|| {
                     sampler.sample(
                         new_logits,
-                        <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ctx_clone),
+                        <span class="kw-2">&amp;</span>ctx_clone,
                         return_logprobs,
                         rng_clone,
                         sample_speculative,
@@ -740,7 +798,7 @@
             </span>} <span class="kw">else </span>{
                 sampler.sample(
                     new_logits,
-                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ctx_clone),
+                    <span class="kw-2">&amp;</span>ctx_clone,
                     return_logprobs,
                     rng_clone,
                     sample_speculative,
@@ -752,15 +810,9 @@
 
     <span class="kw">if </span>add_to_trie {
         <span class="kw">match </span>seq.recognizer {
-            SequenceRecognizer::Regex(<span class="kw-2">ref mut </span>rx) =&gt; {
-                tok_trie
-                    .append_token(rx.as_mut(), second_logprobs_response.token)
-                    .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
-            }
-            SequenceRecognizer::Cfg(<span class="kw-2">ref mut </span>cfg) =&gt; {
-                tok_trie
-                    .append_token(cfg.as_mut(), second_logprobs_response.token)
-                    .map_err(|e| candle_core::Error::Msg(e.to_string()))<span class="question-mark">?</span>;
+            SequenceRecognizer::Llguidance(<span class="kw-2">ref mut </span>llg) =&gt; {
+                llg.commit_token(<span class="prelude-val">Some</span>(second_logprobs_response.token))
+                    .map_err(candle_core::Error::msg)<span class="question-mark">?</span>;
             }
             SequenceRecognizer::None =&gt; {}
         }
@@ -778,8 +830,6 @@
     logits: Tensor,
     seq: <span class="kw-2">&amp;mut </span>Sequence,
     return_logprobs: bool,
-    repeat_last_n: usize,
-    tok_trie: Arc&lt;TokTrie&gt;,
     rng: Arc&lt;std::sync::Mutex&lt;Isaac64Rng&gt;&gt;,
     n_toks: usize,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;SpeculativeSample&gt;&gt; {
@@ -790,8 +840,6 @@
                 chunk,
                 seq,
                 return_logprobs,
-                repeat_last_n,
-                tok_trie.clone(),
                 rng.clone(),
                 <span class="bool-val">true</span>,  <span class="comment">// TODO(EricLBuehler): does this hurt perf?
                 </span><span class="bool-val">false</span>, <span class="comment">// Do not append to trie (yet)
